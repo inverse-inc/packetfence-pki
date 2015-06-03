@@ -56,7 +56,7 @@ def logon(request):
             if user.is_active and user.is_staff:
                 login(request, user)
                 try:
-                    ca = CA.objects.all()
+                    ca = CA.objects.get()
                     for AC in ca:
                         test = AC.id
                     return HttpResponseRedirect("/pki/")
@@ -174,7 +174,7 @@ class list_cert(generic.ListView):
 class create_ca(AjaxableResponseMixin, CreateView):
     template_name = 'ca_form.html'
     model = CA
-    fields = ['cn','mail','organisation','ou','country','state','locality','key_type','key_size','digest','basic_constraints','key_usage','extended_key_usage','days']
+    fields = ['cn','mail','organisation','ou','country','state','locality','key_type','key_size','digest','key_usage','extended_key_usage','days']
     success_url = '/pki/ca/'
 
     def form_valid(self, form):
@@ -473,23 +473,18 @@ class certWizard(SessionWizardView):
 
 class InitWizard(SessionWizardView):
     form_list = [CAForm]
-    template_name = 'wizard.html'
+    template_name = 'wizardca.html'
 
     def done(self, form_list, **kwargs):
-        data = [form.cleaned_data for form in form_list]
+        form_data = [form.cleaned_data for form in form_list]
+        data = dict(form_data[0].items())
         serializer = CaSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-        new_data = JSONRenderer().render(serializer.data)
-        headers = {'content-type': 'application/json'}
-        r = requests.post(restdefault.url, data=new_data, headers=headers)
-        certif = Cert.objects.get(cn=data['cn'])
-        certif.sign()
-        certif.save()
-        response = HttpResponse(mimetype='application/octet-stream')
-        response['Content-Disposition'] = 'attachment; filename=' + string.replace(certif.cn, ' ', '_') + '.p12'
-        response.write(certif.pkcs12(data['password']))
-        return response
+            certif = CA.objects.get(cn=str(data['cn']))
+            certif.sign()
+            certif.save()
+        return HttpResponseRedirect("/pki/")
 
 class JSONResponse(HttpResponse):
     """

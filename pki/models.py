@@ -36,7 +36,7 @@ class CA(models.Model):
     digest = models.CharField(max_length=10, choices=(('md5', 'md5'),('sha1', 'sha1')))
     key_usage = models.CharField(max_length=50,blank=1,help_text="digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement, keyCertSign, cRLSign, encipherOnly, decipherOnly")
     extended_key_usage = models.CharField(max_length=50,blank=1,help_text="serverAuth, clientAuth, codeSigning, emailProtection, timeStamping, msCodeInd, msCodeCom, msCTLSign, msSGC, msEFS, nsSGC")
-    days = models.IntegerField(max_length=4,help_text="Number of day the CA will ba valid")
+    days = models.IntegerField(max_length=4,help_text="Number of day the CA will be valid")
     ca_key = models.TextField(blank=1,null=1,editable=False)
     ca_cert = models.TextField(blank=1,null=1,editable=False)
     issuerKeyHashmd5 = models.TextField(blank=1,null=1,max_length=33,editable=False)
