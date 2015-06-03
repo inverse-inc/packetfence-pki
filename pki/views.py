@@ -290,7 +290,7 @@ class revoke_cert(UpdateView):
 
 def download_cert(request,pk):
     cert = Cert.objects.get(id=pk)
-    response = HttpResponse(mimetype='application/octet-stream')
+    response = HttpResponse(content_type='application/octet-stream')
     response['Content-Disposition'] = 'attachment; filename=' + string.replace(cert.cn, ' ', '_') + '.p12'
     password = generate_password()
     if cert.profile.p12_mail_password:
@@ -466,7 +466,7 @@ class certWizard(SessionWizardView):
             certif = Cert.objects.get(cn=data['cn'])
             certif.sign()
             certif.save()
-        response = HttpResponse(mimetype='application/octet-stream')
+        response = HttpResponse(content_type='application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename=' + string.replace(certif.cn, ' ', '_') + '.p12'
         response.write(certif.pkcs12(data['password']))
         return response
@@ -511,11 +511,10 @@ class cert_detail(APIView):
     Retrieve, update or delete a code snippet.
     """
     model = Cert
-    permission_classes = (permissions.DjangoModelPermissions,)
 
     def get_object(self, pk):
         try:
-            return Cert.objects.get(pk=pk)
+            return Cert.objects.get(cn=pk)
         except Cert.DoesNotExist:
             raise Http404
 
@@ -544,14 +543,29 @@ class cert_detail(APIView):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request, pk):
-        donnee = request.data
-        if not 'profile' in donnee:
-            restdefault = rest.objects.get(name='default')
-            donnee['profile'] = restdefault.profile
-        serializer = CertSerializer(data=donnee)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,  status=status.HTTP_201_CREATED)
+        donnee = request.DATA.copy()
+        try:
+            certificat = Cert.objects.get(cn=pk)
+        except Cert.DoesNotExist:
+            if not 'profile' in donnee:
+                restdefault = rest.objects.get(pk=1)
+                donnee['profile'] = restdefault.profile
+            donnee['cn'] = pk
+            serializer = CertSerializer(data=donnee)
+            if serializer.is_valid():
+                serializer.save()
+                certificat = Cert.objects.get(cn=pk)
+                certificat.sign()
+                certificat.save()
+                response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
+                response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
+                return response
+            else:
+                return Response(status=status.HTTP_204_NO_CONTENT)
+        response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
+        response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
+        return response
+        
 
 
 class cert_get(APIView):
@@ -573,18 +587,18 @@ class cert_get(APIView):
             serializer = CertSerializer(data=donnee)
             if serializer.is_valid():
                 certz = serializer.save()
-                o = Cert.objects.get(cn=t)
+                o = Cert.objects.get(cn=donnee['cn'])
                 o.sign()
                 o.save()
                 fichier = o.pkcs12(donnee['pwd'])
                 response = HttpResponse(fichier, content_type='application/x-pkcs12')
-                response['Content-Disposition'] = "attachment; filename={}.p12".format(t)
+                response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
                 return response
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         # Cert exist so return the cert (unsecure).
         fichier = o.pkcs12(pwd)
         response = HttpResponse(fichier, content_type='application/x-pkcs12')
-        response['Content-Disposition'] = "attachment; filename={}.p12".format(t)
+        response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
         return response
 
 class cert_list(APIView):
@@ -747,9 +761,11 @@ class cert_revoke(APIView):
     def post(self, request, **kwargs):
         donnee = request.data
         try:
-            certificat = Cert.objects.get(cn=donnee['cn'])
+            o = Cert.objects.get(cn=donnee['cn'])
         except Cert.DoesNotExist:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not certificat.revoked:
+            form.cleaned_data['revoked'] = datetime.datetime.now()
         crl = crypto.CRL()
         # Revoke current certificate
         now = datetime.datetime.now().strftime("%Y%m%d%H%M%SZ")
@@ -759,9 +775,6 @@ class cert_revoke(APIView):
         revoked.set_serial(str(x509.get_serial_number()))
         revoked.set_reason(donnee['CRLReason'].encode('ascii'))
         crl.add_revoked(revoked)
-        certificat.revoked = datetime.datetime.now()
-        certificat.CRLReason = donnee['CRLReason']
-        certificat.save()
         certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
         private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
         for cert in Cert.objects.exclude(revoked__isnull=True):
@@ -775,4 +788,3 @@ class cert_revoke(APIView):
             crl.add_revoked(revoked)
         open("%s" % certificat.profile.crl_path, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
         return Response(status=status.HTTP_201_CREATED)
-
