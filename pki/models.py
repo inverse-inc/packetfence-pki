@@ -155,7 +155,7 @@ class LDAP(models.Model):
     group_scope = models.IntegerField(choices=LDAP_SCOPE)
     group_filter = models.CharField(max_length=100, default="(|(objectclass=posixGroup)(objectclass=group)(objectclass=groupofuniquenames))")
     group_member = models.CharField(max_length=20)
-    are_members_dn = models.BooleanField()
+    are_members_dn = models.BooleanField(default=None)
 
     def search(self, base_dn, scope, filter, attr):
         ko = []
@@ -256,7 +256,7 @@ class CertProfile(models.Model):
     key_usage = models.CharField(max_length=50,blank=1)
     extended_key_usage = models.CharField(max_length=50,blank=1)
     p12_smtp_server = models.CharField(max_length=30)
-    p12_mail_password = models.BooleanField()
+    p12_mail_password = models.BooleanField(default=None)
     p12_mail_subject = models.CharField(max_length=30,blank=1)
     p12_mail_from = models.CharField(max_length=50,blank=1)
     p12_mail_header = models.TextField(blank=1)
