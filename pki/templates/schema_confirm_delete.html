@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}<img src="/img/winprops.png"> {% trans "Schema" %}{% endblock %}
+
+{% block content %}
+<div style="text-align: center; width: 70%">
+<form method="post" action="/pki/ldap/schema/{{ object.id }}/del/">
+{% trans "Delete Schema " %} {{ object.name }} ?<br>
+<br>
+<input type="button" onclick="document.location='/pki/ldap/schema/'" value="{% trans "no" %}" style="width: 50px;"/> <input type="submit" value="{% trans "yes" %}" style="width: 50px;"/>
+{% csrf_token %}
+</form>
+</div>
+{% endblock %}
+
+{% block action %}
+
+{% endblock %}
+

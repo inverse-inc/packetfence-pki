@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}<img src="/img/winprops.png"> {% trans "Rest API" %}{% endblock %}
+
+{% block content %}
+<div style="text-align: center; width: 70%">
+<form method="post" action="/pki/rest/{{ object.id }}/del/">
+{% trans "Delete rest " %} {{ object.name }} ?<br>
+<br>
+<input type="button" onclick="document.location='/pki/rest/'" value="{% trans "no" %}" style="width: 50px;"/> <input type="submit" value="{% trans "yes" %}" style="width: 50px;"/>
+{% csrf_token %}
+</form>
+</div>
+{% endblock %}
+
+{% block action %}
+
+{% endblock %}
+

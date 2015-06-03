@@ -1,0 +1,15 @@
+{% extends "simplebase.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+        <img src="{% static "img/bullet_red.png" %}">
+          {% trans "Ask Certificate" %}
+{% endblock %}
+
+
+
+{% block content %}
+Your certificate has been generate and you will receive soon an email with your certificate, use the password you set to import it 
+{% endblock %}

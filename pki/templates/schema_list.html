@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+	<img src="{{ STATIC_URL }}img/icon-user.png"> {% trans "LDAP Schema" %}
+{% endblock %}
+
+{% block content %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+	  <tr>
+	    <th>{% trans "Nom" %}</th>
+	    <th>{% trans "Edit" %}</th>
+            <th>{% trans "Delete" %}</th>
+	  </tr>
+        </thead>
+{% for object in object_list %}
+        <tbody>
+	  <tr>
+            <td>{{ object.name }}</td>
+            <td>
+              <a href="/pki/ldap/schema/{{ object.id }}/"><img src="{{ STATIC_URL }}img/edit.png">
+            </td>
+            <td>
+              <a href="/pki/ldap/schema/{{ object.id }}/del/"><img src="{{ STATIC_URL }}img/editdelete.png">
+            </td>
+          </tr>
+{% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+{% block action %}
+<h1 class="page-header"><img src='{{ STATIC_URL }}img/goto.png'>{% trans "Action" %}</h1>
+<div class="table-responsive">
+<table class="table table-striped">
+  <div class="list-group">
+    <a href="/pki/ldap/schema/new/"  class="list-group-item">{% trans "Add LDAP Schema" %}</a>
+  </div>
+</table>
+</div>
+{% endblock %}

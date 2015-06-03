@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+        <img src="{% static "img/bullet_red.png" %}"> 
+        {% if not object.id %}
+          {% trans "Add Certificate Authority" %}
+        {% else %}
+          {% trans "Edit Certificate Authority" %}
+        {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if not object.id %}
+    <form action="/pki/ca/new/" method="post">
+  {% else %}
+    <form action="/pki/ca/{{ object.id }}/" method="post">
+  {% endif %}
+{% csrf_token %}
+{% bootstrap_form form %}
+
+{% buttons %}
+    <button type="submit" class="btn btn-primary">
+        Submit
+   </button>
+{% endbuttons %}
+
+</form>
+
+{% endblock %}

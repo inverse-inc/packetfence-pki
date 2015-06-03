@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+        <img src="{% static "img/bullet_red.png" %}">
+       {% if not object.id %}
+         {% trans "Add LDAP" %}
+       {% else %}
+          {% trans "Edit LDAP" %}
+       {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if not object.id %}
+    <form action="/pki/ldap/new/" method="post">
+  {% else %}
+    <form action="/pki/ldap/{{ object.id }}/" method="post">
+  {% endif %}
+{% csrf_token %}
+{% bootstrap_form form %}
+{% buttons %}
+    <button type="submit" class="btn btn-primary">
+        Submit
+   </button>
+{% endbuttons %}
+</form>
+
+{% endblock %}
+
+{% block action %}
+{% block action %}
+  {% if object.id %}
+<h1 class="page-header"><img src='{{ STATIC_URL }}img/goto.png'>{% trans "Action" %}</h1>
+<div class="table-responsive">
+<table class="table table-striped">
+  <div class="list-group">
+    <a href="/pki/ldap/{{ object.id }}/users/"  class="list-group-item">{% trans "Users List" %}</a>
+  </div>
+</table>
+</div>
+{% endif %}
+{% endblock %}

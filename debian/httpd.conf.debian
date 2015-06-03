@@ -1,0 +1,160 @@
+<IfVersion >= 2.4>
+
+    LoadModule     mpm_prefork_module /usr/lib/apache2/modules/mod_mpm_prefork.so
+
+    <IfModule mpm_prefork_module>
+        StartServers          5
+        MinSpareServers       5
+        MaxSpareServers      10
+        MaxClients          150
+        MaxRequestsPerChild   0
+    </IfModule>
+
+    <IfModule !mod_authz_core.c>
+        LoadModule      authz_core_module       /usr/lib/apache2/modules/mod_authz_core.so
+    </IfModule>
+
+</IfVersion>
+
+    <IfModule !mod_ssl.c>
+        LoadModule      ssl_module              /usr/lib/apache2/modules/mod_ssl.so
+    </IfModule>
+    <IfModule !mod_wsgi.c>
+        LoadModule      wsgi_module             /usr/lib/apache2/modules/mod_wsgi.so
+    </IfModule>
+
+<IfVersion < 2.4>
+    <IfModule !mod_authz_host.c>
+        LoadModule      authz_host_module       /usr/lib/apache2/modules/mod_authz_host.so
+    </IfModule>
+</IfVersion>
+  
+    <IfModule !mod_log_config.c>
+        LoadModule      log_config_module       /usr/lib/apache2/modules/mod_log_config.so
+    </IfModule>
+    <IfModule !mod_mime.c>
+        LoadModule      mime_module             /usr/lib/apache2/modules/mod_mime.so
+    </IfModule>
+    <IfModule !mod_alias.c>
+        LoadModule      alias_module            /usr/lib/apache2/modules/mod_alias.so
+    </IfModule>
+
+    user pf
+    group pf
+
+    Listen *:9191
+    Listen *:9292
+    ServerName pki
+
+    ServerAdmin root@localhost
+
+    <IfModule mod_mime.c>
+        TypesConfig /usr/local/pf/pki/conf/mime.types
+    </IfModule>
+
+    PidFile /usr/local/pf/pki/packetfence-pki.pid
+
+    ErrorLog /var/log/apache2/error.log
+
+    <Virtualhost *:9191>
+
+        DocumentRoot /usr/local/pf/pki
+
+        ServerName pki
+
+        SSLEngine                    On
+        SSLCACertificateFile         /usr/local/pf/pki/conf/server.crt
+        SSLCertificateKeyFile        /usr/local/pf/pki/conf/server.key
+        SSLCertificateFile           /usr/local/pf/pki/conf/server.crt
+
+        SSLVerifyClient              none
+        SSLVerifyDepth               2
+
+        SSLOptions +StdEnvVars
+
+        Alias /static/ /usr/local/pf/pki/pki/static/
+        Alias /favicon.ico /usr/local/pf/pki/pki/static/img/key.ico
+
+        <Directory /usr/local/pf/pki/pki/static>
+            <IfVersion < 2.4>
+                Order deny,allow
+                Allow from all
+            </IfVersion>
+            <IfVersion >= 2.4>
+                Require all granted
+            </IfVersion>
+        </Directory>
+
+        <Directory "/usr/local/pf/pki/">
+            <IfVersion < 2.4>
+                AllowOverride All
+                Order deny,allow
+                Allow from all
+            </IfVersion>
+            <IfVersion >= 2.4>
+                Require all granted
+            </IfVersion>
+        </Directory>
+
+
+        ServerAdmin admin@localhost
+
+        LogLevel warn
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+
+        ErrorLog "/usr/local/pf/pki/logs/packetfence_pki.error.log"
+        CustomLog "/usr/local/pf/pki/logs/packetfence_pki.access.log" combined
+
+        # mod_wsgi configuration is here
+        # we are running as user/group 'deamon', if you don't have those you need to change or create.
+        WSGIDaemonProcess packetfence-pki user=pf group=pf processes=2 threads=25
+        WSGIScriptAlias / /usr/local/pf/pki/conf/packetfence-pki.wsgi
+
+    </Virtualhost>
+    <Virtualhost *:9292>
+
+        DocumentRoot /usr/local/pf/pki
+
+        ServerName pki
+
+        ErrorLog /var/log/apache2/packetfence-pki.err
+
+        Alias /static/ /usr/local/pf/pki/pki/static/
+        Alias /favicon.ico /usr/local/pf/pki/pki/static/img/key.ico
+
+        <Directory /usr/local/pf/pki/pki/static>
+            <IfVersion < 2.4>
+                Order deny,allow
+                Allow from all
+            </IfVersion>
+            <IfVersion >= 2.4>
+                Require all granted
+            </IfVersion>
+        </Directory>
+
+        <Directory "/usr/local/pf/pki/">
+            <IfVersion < 2.4>
+                AllowOverride All
+                Order deny,allow
+                Allow from all
+            </IfVersion>
+            <IfVersion >= 2.4>
+                Require all granted
+            </IfVersion>
+        </Directory>
+
+
+        ServerAdmin admin@localhost
+        LogLevel warn
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+
+        ErrorLog "/usr/local/pf/pki/logs/packetfence_pki.error.log"
+        CustomLog "/usr/local/pf/pki/logs/packetfence_pki.access.log" combined
+
+        # mod_wsgi configuration is here
+        # we are running as user/group 'deamon', if you don't have those you need to change or create.
+        WSGIDaemonProcess packetfence-ocsp user=pf group=pf processes=2 threads=25
+        WSGIScriptAlias / /usr/local/pf/pki/conf/packetfence-pki.wsgi
+
+    </Virtualhost>
+

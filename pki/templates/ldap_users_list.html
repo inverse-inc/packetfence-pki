@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+	<img src="{{ STATIC_URL }}img/icon-user.png"> {% trans "LDAP Directory" %}
+{% endblock %}
+
+{% block content %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+	  <tr>
+	    <th>{% trans "Nom" %}</th>
+	    <th>{% trans "Generate Certificate" %}</th>
+	  </tr>
+        </thead>
+{% for object in users %}
+        <tbody>
+	  <tr>
+            <td>{{ object.0.1.uid.0 }}</td>
+            <td>
+              <a href="/pki/ldap/{{ pk }}/users/{{ object.0.0 }}/generate/"><img src="{{ STATIC_URL }}img/icon-security-badge.png" title="Generate Certificate"></td>
+          </tr>
+{% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+{% block action %}
+
+{% endblock %}
+

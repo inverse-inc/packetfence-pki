@@ -1,0 +1,82 @@
+span.toolTipActive {
+    border-bottom: 1px dashed #073586;
+    position: relative;
+    cursor: help;
+    color: #073586;
+}
+
+span.toolTipActive label { color: #073586; }
+
+.InformationBox tr td span.toolTipActive {
+    font-size: 10px;
+}
+
+span.toolTipActive span.toolTipText {
+    font-size: 10px;
+    font-weight: normal;
+    line-height: 12px;
+    background-color: #ffc;
+    border: 1px solid #000;
+    padding: 14px 14px 18px 14px !important;
+    margin: 0 0 0 20px;
+    position: absolute;
+    color: #333;
+    cursor: default;
+}
+    
+span.toolTipText { display: none; }
+   
+span.toolTipActive span.toolTipText p {
+    padding: 8px 0 8px 0 !important;
+    margin: 0 !important;
+    font-size: 10px !important;
+    line-height: 12px !important;
+}
+    
+span.toolTipActive span.toolTipText h4 {
+    position: relative;
+    margin: -10px 0 0 0;
+}
+    
+span.toolTipActive span.toolTipText ul {
+    margin: 0;
+    width: 300px;
+}
+    
+span.toolTipActive span.toolTipText ul li {
+    margin-left: 5px;
+}
+    
+span.toolTipActive span.toolTipText.leftTip {
+    margin: 0 0 0 -15px;
+}
+    
+span.toolTipActive span.toolTipText.show {
+    display: block;
+    white-space: normal;
+    text-align: left;
+    text-decoration: none;
+    top: 0;
+    padding: 5px 12px 5px 12px;
+}
+    
+span.toolTipActive span.toolTipText.show span.toolTipArrow {
+    position: absolute;
+    top: 5px;
+    width: 11px;
+    height: 11px;
+    background: url(/common/images/tooltip_arrow.gif) no-repeat;
+}
+    
+span.toolTipActive span.toolTipText.show.rightTip span.toolTipArrow {
+    left: -8px !important;
+}
+
+span.toolTipActive span.toolTipText.show.leftTip span.toolTipArrow {
+    right: -11px !important;
+    background: url(/common/images/tooltip_left_arrow.gif) no-repeat;
+}
+    
+select.hideforlayer {
+    visibility: hidden;
+}

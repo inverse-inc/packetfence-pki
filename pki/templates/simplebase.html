@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% load i18n %}
+
+
+{% block _action %}
+	{% block action %}{% endblock %}
+{% endblock %}
+
+{% block main %}
+	<h1 class="page-header">{% block title %}{% endblock %}</h1>
+	{% block content %}{% endblock %}
+{% endblock %}
+
+
+{% block menu %}
+
+{% endblock %}
+

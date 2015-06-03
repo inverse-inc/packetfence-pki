@@ -1,0 +1,18 @@
+{% extends "simplebase.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+   <div class="container">
+
+      <form class="form-signin"  action="/" method="post">{% csrf_token %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="username" name="username" class="form-control" placeholder="Username" required autofocus>
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+    </div> <!-- /container -->
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+	<img src="{{ STATIC_URL }}img/icon-configuration.png"> {% trans "Certificates profiles" %}
+{% endblock %}
+
+{% block content %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+	  <tr>
+	    <th>{% trans "Nom" %}</th>
+	    <th>{% trans "Edit" %}</th>
+            <th>{% trans "Delete" %}</th>
+	  </tr>
+        </thead>
+{% for object in object_list %}
+        <tbody>
+	  <tr>
+            <td>{{ object.name }}</td>
+            <td>
+              <a href="/pki/profile/{{ object.id }}/"><img src="{{ STATIC_URL }}img/edit.png">
+            </td>
+            <td>
+              <a href="/pki/profile/{{ object.id }}/del/"><img src="{{ STATIC_URL }}img/editdelete.png">
+            </td>
+          </tr>
+{% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+{% block action %}
+<h1 class="page-header"><img src='{{ STATIC_URL }}img/goto.png'>{% trans "Action" %}</h1>
+<div class="table-responsive">
+<table class="table table-striped">
+  <div class="list-group">
+    <a href="/pki/profile/new/"  class="list-group-item">{% trans "Add Profile" %}</a>
+  </div>
+</table>
+</div>
+{% endblock %}

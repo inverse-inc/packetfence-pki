@@ -1,0 +1,50 @@
+#! /bin/sh
+#
+# packetfence-pki -- PacketFence pki
+#
+# chkconfig:   345 90 15
+# description: PacketFence pki
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DESC=packetfence-pki
+PacketFence_HOME=/usr/local/pf
+NAME=pki
+TMPDIR=/tmp
+RETVAL=0
+APACHE=/usr/sbin/apache2
+
+case "$1" in
+  start)
+	echo -n "Starting $DESC: ";
+	for i in `ls $PacketFence_HOME/$NAME/conf/*.conf 2> /dev/null`; do 
+		$APACHE -f $i;
+	done
+	echo "." 
+	;;
+  stop)
+	echo -n "Stopping $DESC: ";
+	for i in `ls $PacketFence_HOME/$NAME/*.pid 2> /dev/null`; do 
+		kill `cat $i` 
+	done;
+	echo "." 
+	;;
+  restart|force-reload)
+	$0 stop
+	sleep 5
+	$0 start
+        ;;
+  reload)
+        echo -n "Reloading ${NAME}: "
+        for i in `ls $PacketFence_HOME/$NAME/conf/*.conf 2> /dev/null`; do
+                $APACHE -f $i -k graceful;
+        done
+        echo ".";
+        ;;
+  *)
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop|restart|force-reload|reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

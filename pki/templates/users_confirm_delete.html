@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% block title %}<img src="{% static "img/winprops.png" %}"> {% trans "User Delete Confirmation" %}{% endblock %}
+
+{% block content %}
+<div style="text-align: center; width: 70%">
+<form method="post" action="/users/{{ object.id }}/del/">
+{% trans "Delete user " %} {{ object.username }} ?<br>
+<br>
+<input type="button" onclick="document.location='/users/'" value="{% trans "no" %}" style="width: 50px;"/> <input type="submit" value="{% trans "yes" %}" style="width: 50px;"/>
+{% csrf_token %}
+</form>
+</div>
+{% endblock %}
+
+{% block action %}
+
+{% endblock %}
+
