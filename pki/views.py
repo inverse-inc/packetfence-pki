@@ -741,3 +741,41 @@ def ldap_users_list(request,pk):
 def ldap_groups_list(request,pk):
     ldap = LDAP.objects.get(id=pk)
     return ldap.all_groups()
+
+class cert_revoke(APIView):
+    permissions_classes = (permissions.DjangoModelPermissions,)
+    """
+    Revoke certificate.
+    """
+    models = Cert
+
+    def post(self, request, **kwargs):
+        donnee = request.data
+        try:
+            o = Cert.objects.get(cn=donnee['cn'])
+        except Cert.DoesNotExist:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not certificat.revoked:
+            form.cleaned_data['revoked'] = datetime.datetime.now()
+        crl = crypto.CRL()
+        # Revoke current certificate
+        now = datetime.datetime.now().strftime("%Y%m%d%H%M%SZ")
+        revoked = crypto.Revoked()
+        revoked.set_rev_date(now)
+        x509 = crypto.load_certificate(crypto.FILETYPE_PEM, certificat.x509)
+        revoked.set_serial(str(x509.get_serial_number()))
+        revoked.set_reason(donnee['CRLReason'].encode('ascii'))
+        crl.add_revoked(revoked)
+        certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
+        private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
+        for cert in Cert.objects.exclude(revoked__isnull=True):
+            if certificat.profile != cert.profile:
+                pass
+            revoked = crypto.Revoked()
+            revoked.set_rev_date(now)
+            x509 = crypto.load_certificate(crypto.FILETYPE_PEM, cert.x509)
+            revoked.set_serial(str(x509.get_serial_number()))
+            revoked.set_reason(cert.CRLReason.encode('ascii'))
+            crl.add_revoked(revoked)
+        open("%s" % certificat.profile.crl_path, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
+        return Response(status=status.HTTP_201_CREATED)

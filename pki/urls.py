@@ -49,4 +49,5 @@ urlpatterns = patterns('',
     url(r'/ldap/schema/$',                    login_required(views.list_schema.as_view(),login_url='/logon/'), name='schema_list'),
     url(r'/api-token-auth/$',                 restviews.ObtainAuthToken.as_view()),
     url(r'/cert/eaptls/certificate/$',        views.cert_get.as_view()),
+    url(r'/cert/eaptls/revoke/$',             views.cert_revoke.as_view()),
 )
