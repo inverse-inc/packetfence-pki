@@ -9,7 +9,6 @@ Inverse-pki requires the following:
 Django (>= 1.6)
 Django REST framework 
 Django bootstrap3
-Django secure
 
 # Install
 
@@ -54,8 +53,3 @@ sudo pip install djangorestframework
 sudo pip install django-bootstrap3
 ```
 
-## Install Django secure
-
-```
-sudo pip install django-secure
-```
