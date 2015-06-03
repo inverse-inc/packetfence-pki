@@ -1,4 +1,4 @@
-NAME	= inverse-pki
+NAME	= packetfence-pki
 VERSION	= 1.00
 PREFIX	= /usr/local/pf/pki
 UID	= -o nobody
