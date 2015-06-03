@@ -1,10 +1,10 @@
 # Description
 
-Inverse-pki is a light and simple pki.
+PacketFence-pki is a light and simple pki.
 
 # Requirements
 
-Inverse-pki requires the following:
+PacketFence-pki requires the following:
 
 Django (>= 1.6)
 Django REST framework 
