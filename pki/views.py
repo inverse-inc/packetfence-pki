@@ -752,11 +752,9 @@ class cert_revoke(APIView):
     def post(self, request, **kwargs):
         donnee = request.data
         try:
-            o = Cert.objects.get(cn=donnee['cn'])
+            certificat = Cert.objects.get(cn=donnee['cn'])
         except Cert.DoesNotExist:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        if not certificat.revoked:
-            form.cleaned_data['revoked'] = datetime.datetime.now()
         crl = crypto.CRL()
         # Revoke current certificate
         now = datetime.datetime.now().strftime("%Y%m%d%H%M%SZ")
@@ -766,6 +764,9 @@ class cert_revoke(APIView):
         revoked.set_serial(str(x509.get_serial_number()))
         revoked.set_reason(donnee['CRLReason'].encode('ascii'))
         crl.add_revoked(revoked)
+        certificat.revoked = datetime.datetime.now()
+        certificat.CRLReason = donnee['CRLReason']
+        certificat.save()
         certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
         private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
         for cert in Cert.objects.exclude(revoked__isnull=True):
@@ -779,3 +780,4 @@ class cert_revoke(APIView):
             crl.add_revoked(revoked)
         open("%s" % certificat.profile.crl_path, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
         return Response(status=status.HTTP_201_CREATED)
+
