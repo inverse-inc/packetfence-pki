@@ -109,6 +109,7 @@
         # we are running as user/group 'deamon', if you don't have those you need to change or create.
         WSGIDaemonProcess packetfence-pki user=pf group=pf processes=2 threads=25
         WSGIScriptAlias / /usr/local/pf/pki/conf/packetfence-pki.wsgi
+        WSGIPassAuthorization On
 
     </Virtualhost>
     <Virtualhost *:9292>
@@ -155,6 +156,7 @@
         # we are running as user/group 'deamon', if you don't have those you need to change or create.
         WSGIDaemonProcess packetfence-ocsp user=pf group=pf processes=2 threads=25
         WSGIScriptAlias / /usr/local/pf/pki/conf/packetfence-pki.wsgi
+        WSGIPassAuthorization On
 
     </Virtualhost>
 

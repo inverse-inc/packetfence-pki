@@ -308,7 +308,7 @@ class Cert(models.Model):
         pkey = crypto.PKey()
         pkey.generate_key(self.profile.key_type, self.profile.key_size)
         req.set_pubkey(pkey)
-        req.sign(pkey, self.profile.digest)
+        req.sign(pkey, str(self.profile.digest))
         self.pkey = crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey)
         x509 = crypto.X509()
         x509.set_subject(req.get_subject())
@@ -325,7 +325,7 @@ class Cert(models.Model):
             x509.add_extensions([crypto.X509Extension("keyUsage", True,str(self.profile.key_usage))])
         if self.profile.extended_key_usage:
             x509.add_extensions([crypto.X509Extension("extendedKeyUsage", True, str(self.profile.extended_key_usage))])
-        x509.sign(cakey, self.profile.digest)
+        x509.sign(cakey, str(self.profile.digest))
         self.x509 = crypto.dump_certificate(crypto.FILETYPE_PEM, x509)
         certType = rfc2459.Certificate()
         substrate = crypto.dump_certificate(crypto.FILETYPE_ASN1, x509)

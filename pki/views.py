@@ -22,6 +22,8 @@ from pyasn1.codec.der import encoder as der_encoder
 from pyasn1.codec.ber import encoder, decoder
 from pyasn1.type import univ, useful
 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
@@ -57,8 +59,6 @@ def logon(request):
                 login(request, user)
                 try:
                     ca = CA.objects.get()
-                    for AC in ca:
-                        test = AC.id
                     return HttpResponseRedirect("/pki/")
                 except CA.DoesNotExist:
                     return HttpResponseRedirect("/pki/init_wizard/")
@@ -499,14 +499,22 @@ class JSONResponse(HttpResponse):
 def valid_rest_user(request,cert):
     try:
         restprofils = rest.objects.filter(profile=cert.profile)
-        for restprofil in restprofils:
-            if request.user in restprofil.allowed_users.all():
-                return 1
+    except AttributeError:
+        profile = CertProfile.objects.get(name=cert)
+        restprofil = rest.objects.get(profile=profile)
+        if request.user in restprofil.allowed_users.all():
+            return 1
         return 0
-    except rest.DoesNotExist:
-        return 0
+    for restprofil in restprofils:
+        if request.user in restprofil.allowed_users.all():
+            return 1
+    return 0
+#    except rest.DoesNotExist:
+#        return 0
 
 class cert_detail(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
     """
     Retrieve, update or delete a code snippet.
     """
@@ -544,27 +552,33 @@ class cert_detail(APIView):
 
     def post(self, request, pk):
         donnee = request.DATA.copy()
+        donnee['cn'] = pk
         try:
             certificat = Cert.objects.get(cn=pk)
         except Cert.DoesNotExist:
             if not 'profile' in donnee:
                 restdefault = rest.objects.get(pk=1)
                 donnee['profile'] = restdefault.profile
-            donnee['cn'] = pk
-            serializer = CertSerializer(data=donnee)
-            if serializer.is_valid():
-                serializer.save()
-                certificat = Cert.objects.get(cn=pk)
-                certificat.sign()
-                certificat.save()
-                response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
-                response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
-                return response
+            if valid_rest_user(request,donnee['profile']):
+                serializer = CertSerializer(data=donnee)
+                if serializer.is_valid():
+                    serializer.save()
+                    certificat = Cert.objects.get(cn=pk)
+                    certificat.sign()
+                    certificat.save()
+                    response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
+                    response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
+                    return response
+                else:
+                    return Response(status=status.HTTP_204_NO_CONTENT)
             else:
-                return Response(status=status.HTTP_204_NO_CONTENT)
-        response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
-        response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
-        return response
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if valid_rest_user(request,certificat):
+            response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
+            response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
+            return response
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         
 
 
@@ -576,7 +590,7 @@ class cert_get(APIView):
     models = Cert
 
     def post(self, request, **kwargs):
-        donnee = request.data
+        donnee = request.data.copy()
         try:
             o = Cert.objects.get(cn=donnee['cn'])
         except Cert.DoesNotExist:
