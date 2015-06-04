@@ -59,6 +59,8 @@ def logon(request):
                 login(request, user)
                 try:
                     ca = CA.objects.get()
+                    #for AC in ca:
+                    #    test = AC.id
                     return HttpResponseRedirect("/pki/")
                 except CA.DoesNotExist:
                     return HttpResponseRedirect("/pki/init_wizard/")
@@ -273,6 +275,8 @@ class revoke_cert(UpdateView):
         revoked.set_serial(str(x509.get_serial_number()))
         revoked.set_reason(form.cleaned_data['CRLReason'].encode('ascii'))
         crl.add_revoked(revoked)
+        oldcert = CertRevoked(cn = certificat.cn, mail = certificat.mail, x509 = certificat.x509, st = certificat.st, organisation = certificat.organisation, country = certificat.country, pkey = certificat.pkey, profile = certificat.profile, valid_until = certificat.valid_until, date = certificat.date, userIssuerHashmd5 = certificat.userIssuerHashmd5, userIssuerHashsha1 = certificat.userIssuerHashsha1, userIssuerHashsha256 = certificat.userIssuerHashsha256, userIssuerHashsha512 = certificat.userIssuerHashsha512, revoked = datetime.datetime.now(),CRLReason = donnee['CRLReason'] )
+        oldcert.save()
         certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
         private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
         for cert in Cert.objects.exclude(revoked__isnull=True):
@@ -556,64 +560,34 @@ class cert_detail(APIView):
         try:
             certificat = Cert.objects.get(cn=pk)
         except Cert.DoesNotExist:
-            if not 'profile' in donnee:
-                restdefault = rest.objects.get(pk=1)
-                donnee['profile'] = restdefault.profile
-            if valid_rest_user(request,donnee['profile']):
-                serializer = CertSerializer(data=donnee)
-                if serializer.is_valid():
-                    serializer.save()
-                    certificat = Cert.objects.get(cn=pk)
-                    certificat.sign()
-                    certificat.save()
-                    response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
-                    response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
-                    return response
-                else:
-                    return Response(status=status.HTTP_204_NO_CONTENT)
-            else:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            response = create_certificate(request,donnee)
+            return response
         if valid_rest_user(request,certificat):
             response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
             response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
             return response
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        
 
+def create_certificate(request,donnee):
+    if not 'profile' in donnee:
+        restdefault = rest.objects.get(pk=1)
+        donnee['profile'] = restdefault.profile
+    if valid_rest_user(request,donnee['profile']):
+        serializer = CertSerializer(data=donnee)
+        if serializer.is_valid():
+            serializer.save()
+            certificat = Cert.objects.get(cn=donnee['cn'])
+            certificat.sign()
+            certificat.save()
+            response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
+            response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
+            return response
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-class cert_get(APIView):
-    permissions_classes = (permissions.DjangoModelPermissions,)
-    """
-    Create and make available for download.
-    """
-    models = Cert
-
-    def post(self, request, **kwargs):
-        donnee = request.data.copy()
-        try:
-            o = Cert.objects.get(cn=donnee['cn'])
-        except Cert.DoesNotExist:
-            if not 'profile' in donnee:
-                restdefault = rest.objects.get(name='default')
-                profile = restdefault.profile
-                donnee['profile'] = profile.name
-            serializer = CertSerializer(data=donnee)
-            if serializer.is_valid():
-                certz = serializer.save()
-                o = Cert.objects.get(cn=donnee['cn'])
-                o.sign()
-                o.save()
-                fichier = o.pkcs12(donnee['pwd'])
-                response = HttpResponse(fichier, content_type='application/x-pkcs12')
-                response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
-                return response
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # Cert exist so return the cert (unsecure).
-        fichier = o.pkcs12(pwd)
-        response = HttpResponse(fichier, content_type='application/x-pkcs12')
-        response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
-        return response
 
 class cert_list(APIView):
     permission_classes = (permissions.DjangoModelPermissions,)
@@ -766,39 +740,46 @@ def ldap_groups_list(request,pk):
     return ldap.all_groups()
 
 class cert_revoke(APIView):
-    permissions_classes = (permissions.DjangoModelPermissions,)
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
     """
     Revoke certificate.
     """
     models = Cert
 
-    def post(self, request, **kwargs):
-        donnee = request.data
+    def get_object(self, pk):
         try:
-            o = Cert.objects.get(cn=donnee['cn'])
+            return Cert.objects.get(cn=pk)
         except Cert.DoesNotExist:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        if not certificat.revoked:
-            form.cleaned_data['revoked'] = datetime.datetime.now()
-        crl = crypto.CRL()
-        # Revoke current certificate
-        now = datetime.datetime.now().strftime("%Y%m%d%H%M%SZ")
-        revoked = crypto.Revoked()
-        revoked.set_rev_date(now)
-        x509 = crypto.load_certificate(crypto.FILETYPE_PEM, certificat.x509)
-        revoked.set_serial(str(x509.get_serial_number()))
-        revoked.set_reason(donnee['CRLReason'].encode('ascii'))
-        crl.add_revoked(revoked)
-        certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
-        private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
-        for cert in Cert.objects.exclude(revoked__isnull=True):
-            if certificat.profile != cert.profile:
-                pass
+            raise Http404
+
+    def post(self, request, pk):
+        certificat = self.get_object(pk)
+        if valid_rest_user(request,certificat):
+            donnee = request.data.copy()
+            crl = crypto.CRL()
+            # Revoke current certificate
+            now = datetime.datetime.now().strftime("%Y%m%d%H%M%SZ")
             revoked = crypto.Revoked()
             revoked.set_rev_date(now)
-            x509 = crypto.load_certificate(crypto.FILETYPE_PEM, cert.x509)
+            x509 = crypto.load_certificate(crypto.FILETYPE_PEM, certificat.x509)
             revoked.set_serial(str(x509.get_serial_number()))
-            revoked.set_reason(cert.CRLReason.encode('ascii'))
+            revoked.set_reason(donnee['CRLReason'].encode('ascii'))
             crl.add_revoked(revoked)
-        open("%s" % certificat.profile.crl_path, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
-        return Response(status=status.HTTP_201_CREATED)
+            oldcert = CertRevoked(cn = certificat.cn, mail = certificat.mail, x509 = certificat.x509, st = certificat.st, organisation = certificat.organisation, country = certificat.country, pkey = certificat.pkey, profile = certificat.profile, valid_until = certificat.valid_until, date = certificat.date, userIssuerHashmd5 = certificat.userIssuerHashmd5, userIssuerHashsha1 = certificat.userIssuerHashsha1, userIssuerHashsha256 = certificat.userIssuerHashsha256, userIssuerHashsha512 = certificat.userIssuerHashsha512, revoked = datetime.datetime.now(),CRLReason = donnee['CRLReason'] )
+            oldcert.save()
+            certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
+            private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
+            certificat.delete()
+            for cert in CertRevoked.objects.exclude(revoked__isnull=True):
+                if oldcert.profile != cert.profile:
+                    pass
+                revoked = crypto.Revoked()
+                revoked.set_rev_date(now)
+                x509 = crypto.load_certificate(crypto.FILETYPE_PEM, cert.x509)
+                revoked.set_serial(str(x509.get_serial_number()))
+                revoked.set_reason(cert.CRLReason.encode('ascii'))
+                crl.add_revoked(revoked)
+            open("%s" % oldcert.profile.crl_path, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
