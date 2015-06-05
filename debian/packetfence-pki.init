@@ -7,7 +7,7 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DESC=packetfence-pki
-PacketFence_HOME=/usr/local/pf
+PacketFence_HOME=/usr/local
 NAME=pki
 TMPDIR=/tmp
 RETVAL=0
