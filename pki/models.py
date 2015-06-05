@@ -94,6 +94,11 @@ class CA(models.Model):
         p12.set_privatekey(key)
         p12.set_certificate(cert)
         return crypto.dump_pkcs12(p12,passphrase, "")
+    def save_ca(self):
+        my_ca = CA.self.ca_cert
+        my_ca_file = os.path.join('/usr/local/packetfence-pki/ca/', CA.cn+'.pem')
+        my_ca_f = open(my_ca_file, 'w')
+        my_ca_f.write(my_ca)
 
 class Attrib(models.Model):
     ATTRIBUT_TYPE = (

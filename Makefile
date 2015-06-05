@@ -1,6 +1,6 @@
 NAME	= packetfence-pki
 VERSION	= 1.01
-PREFIX	= /usr/local/pf/pki
+PREFIX	= /usr/local/packetfence-pki/
 UID	= -o nobody
 GID	= -g nogroup
 DIRS	= inverse pki conf
@@ -42,6 +42,7 @@ install:
 	install -m0744 manage.py $(DESTDIR)$(PREFIX)/manage.py; \
 	install -m666 initial_data.json $(DESTDIR)$(PREFIX)/initial_data.json; \
 	install -d -m2770 $(DESTDIR)$(PREFIX)/logs; \
+  install -d ${DESTDIR}$(PREFIX)/ca; \
 	if [ -e /etc/debian_version ]; then \
 		install -m0600 debian/httpd.conf.debian $(DESTDIR)$(PREFIX)/conf/httpd.conf; \
 	else \
