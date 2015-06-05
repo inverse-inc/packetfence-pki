@@ -6,6 +6,7 @@ Summary: packetfence-pki
 
 Group:	System/Servers
 License: GPL
+Buildarch: noarch
 URL: https://github.com/inverse-inc/packetfence-pki
 Source0: packetfence-pki-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
