@@ -46,5 +46,6 @@ install:
 	else \
 		install -m0600 rpm/httpd.conf.rpm $(DESTDIR)$(PREFIX)/conf/httpd.conf; \
 	fi; \
+
 clean:
 	rm -fr db*
