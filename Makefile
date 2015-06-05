@@ -41,7 +41,10 @@ install:
 	done
 	install -m0744 manage.py $(DESTDIR)$(PREFIX)/manage.py; \
 	install -d -m2770 $(DESTDIR)$(PREFIX)/logs; \
-	install -m0600 debian/httpd.conf.debian $(DESTDIR)$(PREFIX)/conf/httpd.conf
-	
+	if [ -e /etc/debian_version ]; then \
+		install -m0600 debian/httpd.conf.debian $(DESTDIR)$(PREFIX)/conf/httpd.conf; \
+	else \
+		install -m0600 rpm/httpd.conf.rpm $(DESTDIR)$(PREFIX)/conf/httpd.conf; \
+	fi; \
 clean:
 	rm -fr db*

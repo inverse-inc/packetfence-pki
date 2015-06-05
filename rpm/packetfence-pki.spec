@@ -1,4 +1,4 @@
-%define serverroot /usr/local
+%define serverroot /usr/local/packetfence-pki
 Name: packetfence-pki
 Version: 1.00
 Release: 1%{?dist}
@@ -14,7 +14,7 @@ BuildRequires:	python
 Requires: python
 
 %description
-PacketFence PKI is a small pki to generate certificate for EAP-TLS connection
+Small PKI to integrate with PacketFence for certificates generation when using EAP-TLS
 
 %prep
 %setup -q
@@ -34,13 +34,11 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,apache,apache,-)
-%config(noreplace) %{serverroot}/%{name}/conf/*
-%{serverroot}/%{name}/debian/*
-%{serverroot}/%{name}/inverse/*
-%{serverroot}/%{name}/pki/*
-%{serverroot}/%{name}/rpm/*
-
-
+%config(noreplace) %{serverroot}//conf/*
+%{serverroot}/inverse/*
+%{serverroot}/pki/*
+%{serverroot}/manage.py
+%exclude %{serverroot}/manage.pyc
+%exclude %{serverroot}/manage.pyo
 
 %changelog
-
