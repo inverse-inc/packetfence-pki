@@ -12,7 +12,7 @@ Source0: packetfence-pki-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires:	python
-Requires: python, python-django-bootstrap3, python-django-rest-framework, python-django
+Requires: python, python-django-bootstrap3, python-django-rest-framework, python-django, pyOpenSSL, python-ldap, python-pyasn1
 
 %description
 Small PKI to integrate with PacketFence for certificates generation when using EAP-TLS
