@@ -2,12 +2,12 @@ Source: packetfence-pki
 Section: main/net
 Priority: optional
 Maintainer: Fabrice Durand <fdurand@inverse.ca>
-Build-Depends: debhelper (>= 4.0.0), dpkg-dev,make, patch, perl, autoconf, automake, dh-make, debhelper, devscripts, fakeroot
+Build-Depends: debhelper (>= 4.0.0), dpkg-dev,make, patch, autoconf, automake, dh-make, debhelper, devscripts, fakeroot
 Standards-Version: 3.6.1
 
 Package: packetfence-pki
 Architecture: any
-Depends: openssl, apache2, libapache2-mod-wsgi, sqlite3, sudo, python, python-openssl, python-ldap, python-pyasn1 (>= 0.1.7), python-pyasn1-modules (>= 0.0.3)
+Depends: openssl, apache2, libapache2-mod-wsgi, sqlite3, sudo, python, python-openssl, python-ldap, python-pyasn1 (>= 0.1.7), python-pyasn1-modules (>= 0.0.3), python-djangorestframework, python-bootstrapform
 Description: PacketFence-pki is an opensource pki based on python
  PacketFence-pki is an light opensource pki based on django framework.
  Through a web portail it use to generate clients certificates.
