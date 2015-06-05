@@ -1,0 +1,112 @@
+#! /bin/sh
+#
+# packetfence-pki -- PacketFence pki
+#
+# chkconfig:   345 90 15
+# description: PacketFence pki
+
+# Source function library.
+if [ ! -r /etc/SuSE-release ]; then
+          . /etc/init.d/functions
+else
+	daemon() {
+		$1	
+	}
+fi
+
+
+export PacketFence_HOME=/usr/local
+export NAME=packetfence-pki
+export TMPDIR=/tmp
+export DESC=packetfence-pki
+
+# Source an auxiliary options file if we have one, and pick up OPTIONS,
+if [ -r /etc/sysconfig/${NAME} ] ; then
+	. /etc/sysconfig/${NAME}
+fi
+
+
+RETVAL=0
+
+function start() {
+	echo -n $"Starting ${NAME}: "
+        daemon "/usr/sbin/httpd -f ${PacketFence_HOME}/${NAME}/conf/httpd.conf";
+        echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/${NAME}
+	return $RETVAL
+}
+
+function stop() {
+        # Stop daemons.
+        echo -n $"Stopping ${NAME}: "
+        for i in `ls ${PacketFence_HOME}/${NAME}/conf/*.pid 2> /dev/null`; do
+                kill `cat $i`
+        done
+        [ $RETVAL -eq 0 ] && success || failure
+        echo
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/${NAME}
+        return $RETVAL
+}
+
+function reload() {
+	echo -n "Reloading ${NAME}: "
+	for i in `ls ${PacketFence_HOME}/${NAME}/conf/*.conf 2> /dev/null`; do
+		daemon "/usr/sbin/httpd -f $i -k graceful"
+	done
+	[ $RETVAL -eq 0 ] && success || failure
+	echo
+}
+
+function status() {
+        pidfile="${PacketFence_HOME}/${NAME}/packetfence-pki.pid"
+        if [ -s $pidfile ]; then
+                pid=`cat $pidfile`
+                kill -0 $pid >/dev/null 2>&1
+                if [ "$?" = "0" ]; then
+                        echo "${NAME} (pid $pid) is running"
+                        RETVAL=0
+                else
+                        echo "${NAME} is stopped"
+                        RETVAL=1
+                fi
+        else
+                echo "${NAME} is stopped"
+                RETVAL=1
+        fi
+	return $RETVAL
+}
+
+restart() {
+	stop
+	start
+}
+
+# See how we were called.
+case "$1" in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	restart)
+		restart
+	;;
+	condrestart)
+		# Only restart if it is already running.
+		status >/dev/null 2>&1 && restart
+	;;
+	reload)
+		reload
+	;;
+	status)
+		status
+	;;
+	*)
+		echo "Usage: ${NAME} {start|stop|restart|reload|status}"
+		exit 1
+	;;
+esac
+
+exit $RETVAL
+

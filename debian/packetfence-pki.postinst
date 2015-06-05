@@ -4,22 +4,22 @@
 # see: dh_installdeb(1)
 
 set -e
-if [ -f /usr/local/pf/pki/conf/server.crt ] ; then
+if [ -f /usr/local/packetfence-pki/conf/server.crt ] ; then
 	echo "certificate exist do nothing"
 else
 	openssl req -x509 -new -nodes -days 365 -batch\
-	-out /usr/local/pf/pki/conf/server.crt\
-	-keyout /usr/local/pf/pki/conf/server.key\
-	-nodes -config /usr/local/pf/pki/conf/openssl.cnf
+	-out /usr/local/packetfence-pki/conf/server.crt\
+	-keyout /usr/local/packetfence-pki/conf/server.key\
+	-nodes -config /usr/local/packetfence-pki/conf/openssl.cnf
 fi
-if [ -f /usr/local/pf/pki/db.sqlite3 ] ; then
+if [ -f /usr/local/packetfence-pki/db.sqlite3 ] ; then
 	echo "Database is there do nothing"
 else
-cd /usr/local/pf/pki && ./manage.py syncdb
+cd /usr/local/packetfence-pki && ./manage.py syncdb
 fi
-chown -R pf.pf /usr/local/pf/pki
-chown pf.pf /usr/local/pf/pki/conf/httpd.conf
-chmod 600 /usr/local/pf/pki/conf/httpd.conf
+chown -R pf.pf /usr/local/packetfence-pki
+chown pf.pf /usr/local/packetfence-pki/conf/httpd.conf
+chmod 600 /usr/local/pf/packetfence-pki/conf/httpd.conf
 update-rc.d -f packetfence-pki start 90 2 3 4 5 . stop 90 0 1 6 .
 invoke-rc.d packetfence-pki start
 exit 0
