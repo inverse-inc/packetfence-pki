@@ -48,4 +48,9 @@ install:
 	fi; \
 
 clean:
-	rm -fr db*
+	rm -rf $(GZ) $(TAR) $(BZ2) $(NAME)-$(VERSION)
+
+rpm: clean $(TAR)
+	make $(BZ2)
+	rpmbuild -ta --target noarch $(BZ2)
+	make clean
