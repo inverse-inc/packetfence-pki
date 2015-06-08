@@ -15,7 +15,7 @@ fi
 if [ -f /usr/local/packetfence-pki/db.sqlite3 ] ; then
 	echo "Database is there do nothing"
 else
-cd /usr/local/packetfence-pki && ./manage.py syncdb
+cd /usr/local/packetfence-pki && ./manage.py syncdb --noinput
 fi
 chown -R pf.pf /usr/local/packetfence-pki
 chown pf.pf /usr/local/packetfence-pki/conf/httpd.conf

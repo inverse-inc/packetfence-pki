@@ -44,7 +44,7 @@ fi
 if [ -f %{serverroot}/db.sqlite3 ] ; then
         echo "Database is there do nothing"
 else
-cd %{serverroot} && python manage.py syncdb
+cd %{serverroot} && python manage.py syncdb --noinput
 fi
 chown -R pf.pf %{serverroot}
 chown pf.pf %{serverroot}/conf/httpd.conf
