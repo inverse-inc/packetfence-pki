@@ -481,15 +481,26 @@ class InitWizard(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         form_data = [form.cleaned_data for form in form_list]
-        ca = dict(form_data[0].items())
-        profile = dict(form_data[1].items())
-        rest = dict(form_data[2].items())
-        serializer = CaSerializer(data=ca)
+        ca_data = dict(form_data[0].items())
+        profile_data = dict(form_data[1].items())
+        rest_data = dict(form_data[2].items())
+        serializer = CaSerializer(data=ca_data)
         if serializer.is_valid():
             serializer.save()
-            certif = CA.objects.get(cn=str(data['cn']))
+            certif = CA.objects.get(cn=str(ca_data['cn']))
             certif.sign()
             certif.save()
+        profile_data['ca'] = certif.cn
+        serializer2 = CertProfileSerializer(data=profile_data)
+        if serializer2.is_valid():
+            serializer2.save()
+            profile = CertProfile.objects.get(name=str(profile_data['name']))
+        rest_data['profile'] = profile.name
+        serializer3 = restSerializer(data=rest_data)
+        burmp = serializer3.is_valid()
+        bermot
+        if serializer3.is_valid():
+            serializer3.save()
         return HttpResponseRedirect("/pki/")
 
 class JSONResponse(HttpResponse):
