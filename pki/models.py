@@ -2,7 +2,7 @@ from django.template import Context, Template
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.db import models
-
+from django_countries.fields import CountryField
 from pyasn1.codec.der import encoder, decoder
 from pyasn1_modules import rfc2459, pem
 
@@ -28,7 +28,7 @@ class CA(models.Model):
     mail = models.EmailField(help_text="Email address")
     organisation = models.CharField(max_length=40,help_text="Organisation")
     ou = models.CharField(max_length=20,unique=1,help_text="Organisation Unit")
-    country = models.CharField(max_length=2, default='CA',help_text="Country")
+    country = CountryField(help_text="Country")
     state = models.CharField(max_length=40,help_text="State")
     locality = models.CharField(max_length=40,help_text="Locality")
     key_type = models.IntegerField(choices=((crypto.TYPE_RSA, 'RSA'), (crypto.TYPE_DSA, 'DSA')))
@@ -286,7 +286,7 @@ class Cert(models.Model):
     x509 = models.TextField(blank=1,null=1)
     st = models.CharField(max_length=40)
     organisation = models.CharField(max_length=40)
-    country = models.CharField(max_length=2, default='CA')
+    country = CountryField(help_text="Country")
     pkey = models.TextField(blank=1,null=1)
     profile = models.ForeignKey(CertProfile)
     valid_until = models.DateTimeField(auto_now_add=1,blank=1,null=1)
