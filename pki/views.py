@@ -497,8 +497,6 @@ class InitWizard(SessionWizardView):
             profile = CertProfile.objects.get(name=str(profile_data['name']))
         rest_data['profile'] = profile.name
         serializer3 = restSerializer(data=rest_data)
-        burmp = serializer3.is_valid()
-        bermot
         if serializer3.is_valid():
             serializer3.save()
         return HttpResponseRedirect("/pki/")
