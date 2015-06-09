@@ -52,7 +52,7 @@ MIDDLEWARE_CLASSES = (
     'inverse.middleware.SecurityMiddleware',
 )
 
-SECURE_SSL_PORT = "9191"
+SECURE_SSL_PORT = "9393"
 SECURE_SSL_REDIRECT = True
 SECURE_REDIRECT_EXEMPT = [r'^pki/ocsp/$']
 

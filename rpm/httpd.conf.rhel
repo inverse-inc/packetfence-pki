@@ -46,7 +46,7 @@
     user pf
     group pf
 
-    Listen *:9191
+    Listen *:9393
     Listen *:9292
     ServerName pki
 
@@ -60,7 +60,7 @@
 
     ErrorLog /usr/local/packetfence-pki/logs/error.log
 
-    <Virtualhost *:9191>
+    <Virtualhost *:9393>
 
         DocumentRoot /usr/local/packetfence-pki
 

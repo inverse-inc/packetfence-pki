@@ -44,7 +44,7 @@ install:
 	if [ -e /etc/debian_version ]; then \
 		install -m0600 debian/httpd.conf.debian $(DESTDIR)$(PREFIX)/conf/httpd.conf; \
 	else \
-		install -m0600 rpm/httpd.conf.rpm $(DESTDIR)$(PREFIX)/conf/httpd.conf; \
+		install -m0600 rpm/httpd.conf.rhel $(DESTDIR)$(PREFIX)/conf/httpd.conf; \
 	fi; \
 
 clean:
