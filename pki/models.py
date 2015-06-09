@@ -28,7 +28,7 @@ class CA(models.Model):
     mail = models.EmailField(help_text="Email address")
     organisation = models.CharField(max_length=40,help_text="Organisation")
     ou = models.CharField(max_length=20,unique=1,help_text="Organisation Unit")
-    country = models.CharField(max_length=2, default='CA',help_text="Cuntry")
+    country = models.CharField(max_length=2, default='CA',help_text="Country")
     state = models.CharField(max_length=40,help_text="State")
     locality = models.CharField(max_length=40,help_text="Locality")
     key_type = models.IntegerField(choices=((crypto.TYPE_RSA, 'RSA'), (crypto.TYPE_DSA, 'DSA')))
