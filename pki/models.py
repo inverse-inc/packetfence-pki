@@ -96,7 +96,7 @@ class CA(models.Model):
         p12.set_certificate(cert)
         return crypto.dump_pkcs12(p12,passphrase, "")
     def save_ca(self):
-        my_ca_file = open(os.path.join('./ca/', self.cn+'.pem'), 'w')
+        my_ca_file = open(os.path.join('/usr/local/packetfence-pki/ca/', self.cn+'.pem'), 'w')
         my_ca_file.write(self.ca_cert)
 
 class Attrib(models.Model):
