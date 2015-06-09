@@ -2,7 +2,7 @@ from django.template import Context, Template
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.db import models
-
+from django_countries.fields import CountryField
 from pyasn1.codec.der import encoder, decoder
 from pyasn1_modules import rfc2459, pem
 
@@ -28,7 +28,7 @@ class CA(models.Model):
     mail = models.EmailField(help_text="Email address")
     organisation = models.CharField(max_length=40,help_text="Organisation")
     ou = models.CharField(max_length=20,unique=1,help_text="Organisation Unit")
-    country = models.CharField(max_length=2, default='CA',help_text="Cuntry")
+    country = CountryField(help_text="Country")
     state = models.CharField(max_length=40,help_text="State")
     locality = models.CharField(max_length=40,help_text="Locality")
     key_type = models.IntegerField(choices=((crypto.TYPE_RSA, 'RSA'), (crypto.TYPE_DSA, 'DSA')))
@@ -83,6 +83,7 @@ class CA(models.Model):
         self.issuerKeyHashsha512 = hashlib.sha512(
             valueOnlyBitStringEncoder(issuerSubjectPublicKey)
             ).hexdigest()
+        self.save_ca()
     def get_absolute_url(self):
         return reverse('ca_update', kwargs={'pk': self.pk})
     def __str__(self):
@@ -94,6 +95,9 @@ class CA(models.Model):
         p12.set_privatekey(key)
         p12.set_certificate(cert)
         return crypto.dump_pkcs12(p12,passphrase, "")
+    def save_ca(self):
+        my_ca_file = open(os.path.join('./ca/', self.cn+'.pem'), 'w')
+        my_ca_file.write(self.ca_cert)
 
 class Attrib(models.Model):
     ATTRIBUT_TYPE = (
@@ -247,7 +251,6 @@ class LDAP(models.Model):
 class CertProfile(models.Model):
     name = models.CharField(max_length=20,unique=1)
     ca = models.ForeignKey(CA)
-    ldap = models.ForeignKey(LDAP,blank=1,null=1)
     crl_path = models.CharField(max_length=150,unique=1)
     validity = models.IntegerField()
     key_type = models.IntegerField(choices=((crypto.TYPE_RSA, 'RSA'), (crypto.TYPE_DSA, 'DSA')))
@@ -284,7 +287,7 @@ class Cert(models.Model):
     x509 = models.TextField(blank=1,null=1)
     st = models.CharField(max_length=40)
     organisation = models.CharField(max_length=40)
-    country = models.CharField(max_length=2, default='CA')
+    country = CountryField(help_text="Country")
     pkey = models.TextField(blank=1,null=1)
     profile = models.ForeignKey(CertProfile)
     valid_until = models.DateTimeField(auto_now_add=1,blank=1,null=1)
