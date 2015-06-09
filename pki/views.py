@@ -575,7 +575,7 @@ class cert_detail(APIView):
             return response
         if valid_rest_user(request,certificat):
             response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
-            response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
+            response['Content-Disposition'] = "attachment; filename={0}.p12".format(donnee['cn'])
             return response
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -592,7 +592,7 @@ def create_certificate(request,donnee):
             certificat.sign()
             certificat.save()
             response = HttpResponse(certificat.pkcs12(str(donnee['pwd'])), content_type='application/x-pkcs12')
-            response['Content-Disposition'] = "attachment; filename={}.p12".format(donnee['cn'])
+            response['Content-Disposition'] = "attachment; filename={0}.p12".format(donnee['cn'])
             return response
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
