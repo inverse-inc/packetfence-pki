@@ -1,5 +1,5 @@
 NAME	= packetfence-pki
-VERSION	= 1.00
+VERSION	= 1.01
 PREFIX	= /usr/local/pf/pki
 UID	= -o nobody
 GID	= -g nogroup
@@ -52,5 +52,5 @@ clean:
 
 rpm: clean $(TAR)
 	make $(BZ2)
-	rpmbuild -ta --target noarch $(BZ2)
+	rpmbuild --define 'ver $(VERSION)' -ta --target noarch $(BZ2)
 	make clean

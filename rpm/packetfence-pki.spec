@@ -1,6 +1,6 @@
 %define serverroot /usr/local/packetfence-pki
 Name: packetfence-pki
-Version: 1.00
+Version: %{ver}
 Release: 1%{?dist}
 Summary: packetfence-pki
 
