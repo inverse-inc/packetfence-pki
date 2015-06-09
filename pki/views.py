@@ -462,7 +462,7 @@ class certWizard(SessionWizardView):
         form_data = [form.cleaned_data for form in form_list]
         data = dict(form_data[0].items() + form_data[1].items())
         if not 'profile' in data:
-            restdefault = rest.objects.get(name='default')
+            restdefault = rest.objects.get(pk=1)
             data['profile'] = restdefault.profile
         serializer = CertSerializer(data=data)
         if serializer.is_valid():
@@ -476,13 +476,15 @@ class certWizard(SessionWizardView):
         return response
 
 class InitWizard(SessionWizardView):
-    form_list = [CAForm]
+    form_list = [CAForm, CertProfileForm, restForm]
     template_name = 'wizardca.html'
 
     def done(self, form_list, **kwargs):
         form_data = [form.cleaned_data for form in form_list]
-        data = dict(form_data[0].items())
-        serializer = CaSerializer(data=data)
+        ca = dict(form_data[0].items())
+        profile = dict(form_data[1].items())
+        rest = dict(form_data[2].items())
+        serializer = CaSerializer(data=ca)
         if serializer.is_valid():
             serializer.save()
             certif = CA.objects.get(cn=str(data['cn']))
