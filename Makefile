@@ -40,6 +40,7 @@ install:
 		done \
 	done
 	install -m0744 manage.py $(DESTDIR)$(PREFIX)/manage.py; \
+	install -m666 initial_data.json $(DESTDIR)$(PREFIX)/initial_data.json; \
 	install -d -m2770 $(DESTDIR)$(PREFIX)/logs; \
 	if [ -e /etc/debian_version ]; then \
 		install -m0600 debian/httpd.conf.debian $(DESTDIR)$(PREFIX)/conf/httpd.conf; \

@@ -57,6 +57,7 @@ chmod 600 %{serverroot}/conf/httpd.conf
 %{serverroot}/inverse/*
 %{serverroot}/pki/*
 %{serverroot}/manage.py
+%{serverroot}/initial_data.json
 %exclude %{serverroot}/manage.pyc
 %exclude %{serverroot}/manage.pyo
 %defattr(-,root,root)
