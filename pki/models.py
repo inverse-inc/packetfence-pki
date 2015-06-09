@@ -83,6 +83,7 @@ class CA(models.Model):
         self.issuerKeyHashsha512 = hashlib.sha512(
             valueOnlyBitStringEncoder(issuerSubjectPublicKey)
             ).hexdigest()
+        self.save_ca()
     def get_absolute_url(self):
         return reverse('ca_update', kwargs={'pk': self.pk})
     def __str__(self):
