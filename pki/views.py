@@ -206,6 +206,7 @@ class list_ca(generic.ListView):
 
 def sign_ca(request,pk):
     p = CA.objects.get(id=pk)
+    CA.save_ca()
     if not p.ca_key:
         p.sign()
         p.save()
