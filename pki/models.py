@@ -402,6 +402,24 @@ class Cert(models.Model):
     class Meta:
         db_table = 'cert'
 
+class CertRevoked(models.Model):
+    cn = models.CharField(max_length=20)
+    mail = models.EmailField()
+    x509 = models.TextField(blank=1,null=1)
+    st = models.CharField(max_length=40)
+    organisation = models.CharField(max_length=40)
+    country = models.CharField(max_length=2, default='CA')
+    pkey = models.TextField(blank=1,null=1)
+    profile = models.ForeignKey(CertProfile)
+    valid_until = models.DateTimeField(auto_now_add=1,blank=1,null=1)
+    date = models.DateTimeField(auto_now_add=1,blank=1,null=1)
+    revoked = models.DateTimeField(blank=1,null=1)
+    CRLReason = models.CharField(max_length=20, blank=1,null=1)
+    userIssuerHashmd5 = models.TextField(blank=1,null=1,max_length=33,editable=False)
+    userIssuerHashsha1 = models.TextField(blank=1,null=1,max_length=41,editable=False)
+    userIssuerHashsha256 = models.TextField(blank=1,null=1,max_length=65,editable=False)
+    userIssuerHashsha512 = models.TextField(blank=1,null=1,max_length=129,editable=False)
+
 class ValueOnlyBitStringEncoder(encoder.encoder.BitStringEncoder):
     # These methods just do not encode tag and length fields of TLV
     def encodeTag(self, *args): return ''
