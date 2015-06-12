@@ -1,8 +1,8 @@
-packetfence-pki (1.0.1) UNRELEASED; urgency=medium
+packetfence-pki (1.0.2) unstable; urgency=medium
 
   * Bug fix 
 
- -- Durand Fabrice <fdurand@inverse.ca>  Mon, 25 Aug 2014 11:32:52 -0400
+ -- Durand Fabrice <fdurand@inverse.ca>  Fri, 12 Jun 2015 14:50:14 -0400
 
 packetfence-pki (1.0.0-1) unstable; urgency=low
 

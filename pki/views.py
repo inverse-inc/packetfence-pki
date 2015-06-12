@@ -290,7 +290,7 @@ class revoke_cert(UpdateView):
             revoked.set_reason(cert.CRLReason.encode('ascii'))
             crl.add_revoked(revoked)
         crl_file = os.path.join('/usr/local/packetfence-pki/ca/',certificat.profile.name+'.crl')
-        open("%s" % crl_file "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
+        open("%s" % crl_file, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
         return super(revoke_cert, self).form_valid(form)
 
 
