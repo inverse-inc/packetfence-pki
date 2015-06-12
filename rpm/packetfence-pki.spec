@@ -25,12 +25,19 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %install
-make PREFIX=$RPM_BUILD_ROOT%{serverroot} PREFIXLIB=$RPM_BUILD_ROOT%{serverroot} UID='-o apache' GID='-g apache' install
+make PREFIX=$RPM_BUILD_ROOT%{serverroot} PREFIXLIB=$RPM_BUILD_ROOT%{serverroot} UID='-o nobody' GID='-g nobody' install
 install -d -m0700 $RPM_BUILD_ROOT/etc/init.d
 install -m0755 rpm/%{name} $RPM_BUILD_ROOT/etc/init.d/%{name}
 
 %clean
 rm -rf %{buildroot}
+
+%pre
+
+if ! /usr/bin/id pf &>/dev/null; then
+        /usr/sbin/useradd -r -d "/usr/local/packetfence-pki" -s /bin/sh -c "PacketFence" -M pf || \
+                echo Unexpected error adding user "pf" && exit
+fi
 
 %post
 if [ -f %{serverroot}/conf/server.crt ] ; then
@@ -60,8 +67,6 @@ chmod 600 %{serverroot}/conf/httpd.conf
 %{serverroot}/initial_data.json
 %dir %{serverroot}/logs
 %dir %{serverroot}/ca
-%exclude %{serverroot}/manage.pyc
-%exclude %{serverroot}/manage.pyo
 %defattr(-,root,root)
 /etc/init.d/%{name}
 
