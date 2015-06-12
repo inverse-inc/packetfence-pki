@@ -1,5 +1,5 @@
 NAME	= packetfence-pki
-VERSION	= 1.01
+VERSION	= 1.02
 PREFIX	= /usr/local/packetfence-pki
 UID	= -o nobody
 GID	= -g nogroup
