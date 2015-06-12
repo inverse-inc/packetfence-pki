@@ -289,7 +289,8 @@ class revoke_cert(UpdateView):
             revoked.set_serial(str(x509.get_serial_number()))
             revoked.set_reason(cert.CRLReason.encode('ascii'))
             crl.add_revoked(revoked)
-        open("%s" % certificat.profile.crl_path, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
+        crl_file = os.path.join('/usr/local/packetfence-pki/ca/',certificat.profile.name+'.crl')
+        open("%s" % crl_file "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
         return super(revoke_cert, self).form_valid(form)
 
 
@@ -792,6 +793,7 @@ class cert_revoke(APIView):
                 revoked.set_serial(str(x509.get_serial_number()))
                 revoked.set_reason(cert.CRLReason.encode('ascii'))
                 crl.add_revoked(revoked)
-            open("%s" % oldcert.profile.crl_path, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
+            crl_file = os.path.join('/usr/local/packetfence-pki/ca/', oldcert.profile.name+'.crl' )
+            open("%s" % crl_file, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
