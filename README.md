@@ -53,3 +53,8 @@ sudo pip install djangorestframework
 sudo pip install django-bootstrap3
 ```
 
+# Setup
+
+Connect your browser to https://@ip:9393 and use the default username and password (admin/p@ck3tf3nc3).
+
+
