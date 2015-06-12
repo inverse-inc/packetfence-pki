@@ -63,7 +63,7 @@ class CA(models.Model):
         if self.extended_key_usage:
             cert.add_extensions([crypto.X509Extension("extendedKeyUsage", True,self.extended_key_usage)])
         cert.add_extensions([crypto.X509Extension("basicConstraints", True, "CA:TRUE")])
-        cert.sign(k, self.digest)
+        cert.sign(k, str(self.digest))
         self.ca_key = crypto.dump_privatekey(crypto.FILETYPE_PEM, k)
         self.ca_cert = crypto.dump_certificate(crypto.FILETYPE_PEM, cert)
         certType = rfc2459.Certificate()

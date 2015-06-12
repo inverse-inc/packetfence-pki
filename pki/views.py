@@ -58,10 +58,11 @@ def logon(request):
             if user.is_active and user.is_staff:
                 login(request, user)
                 try:
-                    ca = CA.objects.get()
-                    #for AC in ca:
-                    #    test = AC.id
-                    return HttpResponseRedirect("/pki/")
+                    ca = CA.objects.count()
+                    if ca >= 1:
+                        return HttpResponseRedirect("/pki/")
+                    else:
+                        return HttpResponseRedirect("/pki/init_wizard/")
                 except CA.DoesNotExist:
                     return HttpResponseRedirect("/pki/init_wizard/")
     return render_to_response('logon.html',context_instance=RequestContext(request))
