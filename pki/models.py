@@ -251,7 +251,6 @@ class LDAP(models.Model):
 class CertProfile(models.Model):
     name = models.CharField(max_length=20,unique=1)
     ca = models.ForeignKey(CA)
-    crl_path = models.CharField(max_length=150,unique=1)
     validity = models.IntegerField()
     key_type = models.IntegerField(choices=((crypto.TYPE_RSA, 'RSA'), (crypto.TYPE_DSA, 'DSA')))
     key_size = models.IntegerField(choices=((512, '512'), (1024, '1024'),(2048, '2048')))

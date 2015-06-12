@@ -49,7 +49,7 @@ class CAForm(ModelForm):
 class CertProfileForm(ModelForm):
     class Meta:
         model = CertProfile
-        fields = ['name','crl_path','validity','key_type','key_size','digest','key_usage','extended_key_usage','p12_smtp_server','p12_mail_password','p12_mail_subject','p12_mail_from','p12_mail_header','p12_mail_footer']
+        fields = ['name','validity','key_type','key_size','digest','key_usage','extended_key_usage','p12_smtp_server','p12_mail_password','p12_mail_subject','p12_mail_from','p12_mail_header','p12_mail_footer']
 
 class restForm(ModelForm):
     class Meta:
