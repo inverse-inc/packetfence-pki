@@ -6,19 +6,15 @@
 # description: PacketFence pki
 
 # Source function library.
-if [ ! -r /etc/SuSE-release ]; then
-          . /etc/init.d/functions
-else
-	daemon() {
-		$1	
-	}
-fi
 
+. /etc/rc.d/init.d/functions
 
 export PacketFence_HOME=/usr/local
 export NAME=packetfence-pki
 export TMPDIR=/tmp
 export DESC=packetfence-pki
+export RETVAL=0
+export STOP_TIMEOUT=10
 
 # Source an auxiliary options file if we have one, and pick up OPTIONS,
 if [ -r /etc/sysconfig/${NAME} ] ; then
@@ -28,36 +24,40 @@ fi
 
 RETVAL=0
 
-function start() {
-	echo -n $"Starting ${NAME}: "
+start() {
+        echo -n $"Starting ${NAME}: "
         daemon "/usr/sbin/httpd -f ${PacketFence_HOME}/${NAME}/conf/httpd.conf";
+        RETVAL=$?
         echo
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/${NAME}
-	return $RETVAL
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/${NAME}
+        return $RETVAL
 }
 
-function stop() {
+
+stop() {
         # Stop daemons.
         echo -n $"Stopping ${NAME}: "
         for i in `ls ${PacketFence_HOME}/${NAME}/*.pid 2> /dev/null`; do
-                kill `cat $i`
+                killproc -p $i -d ${STOP_TIMEOUT} /usr/sbin/httpd
         done
+        RETVAL=$?
         [ $RETVAL -eq 0 ] && success || failure
         echo
         [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/${NAME}
         return $RETVAL
 }
 
-function reload() {
-	echo -n "Reloading ${NAME}: "
-	for i in `ls ${PacketFence_HOME}/${NAME}/conf/*.conf 2> /dev/null`; do
-		daemon "/usr/sbin/httpd -f $i -k graceful"
-	done
-	[ $RETVAL -eq 0 ] && success || failure
-	echo
+reload() {
+        echo -n "Reloading ${NAME}: "
+        for i in `ls ${PacketFence_HOME}/${NAME}/conf/*.conf 2> /dev/null`; do
+                LSB=1 killproc -p $i /usr/sbin/httpd -HUP
+        done
+        RETVAL=$?
+        [ $RETVAL -eq 0 ] && success || failure
+        echo
 }
 
-function status() {
+status() {
         pidfile="${PacketFence_HOME}/${NAME}/packetfence-pki.pid"
         if [ -s $pidfile ]; then
                 pid=`cat $pidfile`
@@ -73,12 +73,7 @@ function status() {
                 echo "${NAME} is stopped"
                 RETVAL=1
         fi
-	return $RETVAL
-}
-
-restart() {
-	stop
-	start
+        return $RETVAL
 }
 
 # See how we were called.
@@ -90,7 +85,8 @@ case "$1" in
 		stop
 	;;
 	restart)
-		restart
+		stop
+                start
 	;;
 	condrestart)
 		# Only restart if it is already running.
@@ -109,4 +105,3 @@ case "$1" in
 esac
 
 exit $RETVAL
-
