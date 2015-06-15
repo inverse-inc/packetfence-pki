@@ -58,7 +58,7 @@
 
     <Virtualhost *:9393>
 
-        DocumentRoot /usr/local/pf/pki
+        DocumentRoot /usr/local/packetfence-pki
 
         ServerName pki
 
