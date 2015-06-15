@@ -173,6 +173,13 @@ class list_cert(generic.ListView):
         """Return the cert list."""
         return Cert.objects.all()
 
+class list_certrevoked(generic.ListView):
+    template_name = 'cert_list_revoked.html'
+    context_object_name = 'list_certrevoked'
+
+    def get_queryset(self):
+        """Return the cert list."""
+        return CertRevoked.objects.all()
 
 class create_ca(AjaxableResponseMixin, CreateView):
     template_name = 'ca_form.html'

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+	<img src="{{ STATIC_URL }}img/icon-user-keys.png"> {% trans "Revoked Certificates List" %}
+{% endblock %}
+
+{% block content %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+	  <tr>
+	    <th>{% trans "Nom" %}</th>
+	    <th>{% trans "Profil" %}</th>
+	  </tr>
+        </thead>
+{% for object in object_list %}
+        <tbody>
+	  <tr>
+            <td>{{ object.cn }}</td>
+            <td>
+              <a href="/pki/profile/{{ object.profile.id }}/">{{ object.profile.name }}
+            </td>
+          </tr>
+{% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+
+{% block action %}
+{% endblock %}
