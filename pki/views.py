@@ -184,7 +184,7 @@ class list_certrevoked(generic.ListView):
 class create_ca(AjaxableResponseMixin, CreateView):
     template_name = 'ca_form.html'
     model = CA
-    fields = ['cn','mail','organisation','ou','country','state','locality','key_type','key_size','digest','key_usage','extended_key_usage','days']
+    fields = ['cn','mail','organisation','country','state','locality','key_type','key_size','digest','key_usage','extended_key_usage','days']
     success_url = '/pki/ca/'
 
     def form_valid(self, form):
