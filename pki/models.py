@@ -27,7 +27,6 @@ class CA(models.Model):
     cn = models.CharField(max_length=20,unique=1,help_text="Common Name")
     mail = models.EmailField(help_text="Email address of the contact for your organisation")
     organisation = models.CharField(max_length=40,help_text="Organisation")
-    ou = models.CharField(max_length=20,unique=1,help_text="Organisation Unit")
     country = CountryField(help_text="Country")
     state = models.CharField(max_length=40,help_text="State or Province")
     locality = models.CharField(max_length=40,help_text="Locality")

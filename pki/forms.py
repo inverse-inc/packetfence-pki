@@ -44,7 +44,7 @@ class UserCreateForm(UserCreationForm):
 class CAForm(ModelForm):
     class Meta:
         model = CA
-        fields = ['cn','mail','organisation','ou','country','state','locality','key_type','key_size','digest','key_usage','extended_key_usage','days']
+        fields = ['cn','mail','organisation','country','state','locality','key_type','key_size','digest','key_usage','extended_key_usage','days']
 
 class CertProfileForm(ModelForm):
     class Meta:
