@@ -100,7 +100,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    "/usr/local/pf/pki/pki/static",
+    "/usr/local/packetfence-pki/pki/static",
 )
 
 VERSION = '1.0'

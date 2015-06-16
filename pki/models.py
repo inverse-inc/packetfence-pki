@@ -249,20 +249,20 @@ class LDAP(models.Model):
         return reverse('ldap_update', kwargs={'pk': self.pk})
 
 class CertProfile(models.Model):
-    name = models.CharField(max_length=20,unique=1)
+    name = models.CharField(max_length=20,unique=1,help_text="Profile Name")
     ca = models.ForeignKey(CA)
-    validity = models.IntegerField()
+    validity = models.IntegerField(help_text="Number of day the certificate will be valid")
     key_type = models.IntegerField(choices=((crypto.TYPE_RSA, 'RSA'), (crypto.TYPE_DSA, 'DSA')))
     key_size = models.IntegerField(choices=((512, '512'), (1024, '1024'),(2048, '2048')))
     digest = models.CharField(max_length=10, choices=(('md5', 'md5'),('sha1', 'sha1')))
-    key_usage = models.CharField(max_length=50,blank=1)
-    extended_key_usage = models.CharField(max_length=50,blank=1)
-    p12_smtp_server = models.CharField(max_length=30)
-    p12_mail_password = models.BooleanField(default=None)
-    p12_mail_subject = models.CharField(max_length=30,blank=1)
-    p12_mail_from = models.CharField(max_length=50,blank=1)
-    p12_mail_header = models.TextField(blank=1)
-    p12_mail_footer = models.TextField(blank=1)
+    key_usage = models.CharField(max_length=50,blank=1,help_text="digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement, keyCertSign, cRLSign, encipherOnly, decipherOnly")
+    extended_key_usage = models.CharField(max_length=50,blank=1,help_text="serverAuth, clientAuth, codeSigning, emailProtection, timeStamping, msCodeInd, msCodeCom, msCTLSign, msSGC, msEFS, nsSGC")
+    p12_smtp_server = models.CharField(max_length=30,help_text="IP or fqdn of the smtp server")
+    p12_mail_password = models.BooleanField(default=None,help_text="Send the password of the pkcs12 file")
+    p12_mail_subject = models.CharField(max_length=30,blank=1,help_text="Email subject")
+    p12_mail_from = models.CharField(max_length=50,blank=1,help_text="Sender email address")
+    p12_mail_header = models.TextField(blank=1,help_text="Email header")
+    p12_mail_footer = models.TextField(blank=1,help_text="Email footer")
     def get_absolute_url(self):
         return reverse('profile_update', kwargs={'pk': self.pk})
     def __str__(self):
@@ -435,7 +435,7 @@ class ValueOnlyBitStringEncoder(encoder.encoder.BitStringEncoder):
 valueOnlyBitStringEncoder = ValueOnlyBitStringEncoder()
 
 class rest(models.Model):
-    name = models.CharField(max_length=20,unique=1)
+    name = models.CharField(max_length=20,unique=1,help_text="REST Profile name")
     profile = models.ForeignKey(CertProfile)
     allowed_users = models.ManyToManyField(User)
 
