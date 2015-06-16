@@ -11,6 +11,14 @@
 
 
 {% block content %}
+<ul>
+<b>This will initialize the pki with the following steps:</b>
+
+<li>Step 1: Create the CA (This will create the CA that will be use to sign your certificates)</li>
+<li>Step 2: Configure the certificate profile (This will configure a profile that will be use to create your certificates)</li>
+<li>Step 3: Configure the REST API (This will configure a REST API that will be use to communicate with the PKI)</li>
+
+</ul>
 <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
 <form action="" method="post">{% csrf_token %}
 <table>
