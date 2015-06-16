@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 4.0.0), dpkg-dev,make, patch, autoconf, automake, d
 Standards-Version: 3.6.1
 
 Package: packetfence-pki
-Architecture: any
+Architecture: all
 Depends: openssl, apache2, libapache2-mod-wsgi, sqlite3, sudo, python, python-openssl, python-ldap, python-pyasn1 (>= 0.1.7), python-pyasn1-modules (>= 0.0.5), python-djangorestframework, python-django-bootstrap3, python-django-countries, python-pysqlite2
 Description: PacketFence-pki is an opensource pki based on python
  PacketFence-pki is an light opensource pki based on django framework.
