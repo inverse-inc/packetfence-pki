@@ -29,7 +29,10 @@
 <div class="table-responsive">
 <table class="table table-striped">
   <div class="list-group">
-    <a href="/user/password/"  class="list-group-item">{% trans "Change User Password" %}</a>
+  {% if not object.id %}
+  {% else %}
+    <a href="/user/password/{{ object.id }}/"  class="list-group-item">{% trans "Change User Password" %}</a>
+  {% endif %}
   </div>
 </table>
 </div>

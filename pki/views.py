@@ -237,6 +237,20 @@ class update_user(UpdateView):
     success_url = '/users/'
     fields = ['first_name', 'last_name','email','user_permissions','is_active','is_staff']
 
+@login_required(login_url='/logon/')
+def update_user_password(request,pk):
+    if request.method == 'POST':
+        form = CertForm2(request.POST)
+        toto = form.is_valid()
+        if form.is_valid():
+            u = User.objects.get(id=pk)
+            u.set_password(form.cleaned_data['password'])
+            u.save()
+            return HttpResponseRedirect("/users/")
+    else:
+        form = CertForm2()
+    return render_to_response('password_form.html',{'form': form, 'pk': pk},context_instance=RequestContext(request))
+
 
 class delete_user(DeleteView):
     template_name = 'users_confirm_delete.html'
