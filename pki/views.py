@@ -301,8 +301,9 @@ class revoke_cert(UpdateView):
         oldcert.save()
         certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
         private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
-        for cert in Cert.objects.exclude(revoked__isnull=True):
-            if certificat.profile != cert.profile:
+        certificat.delete()
+        for cert in CertRevoked.objects.exclude(revoked__isnull=True):
+            if oldcert.profile != cert.profile:
                 pass
             revoked = crypto.Revoked()
             revoked.set_rev_date(now)
@@ -310,7 +311,7 @@ class revoke_cert(UpdateView):
             revoked.set_serial(str(x509.get_serial_number()))
             revoked.set_reason(cert.CRLReason.encode('ascii'))
             crl.add_revoked(revoked)
-        crl_file = os.path.join('/usr/local/packetfence-pki/ca/',certificat.profile.name+'.crl')
+        crl_file = os.path.join('/usr/local/packetfence-pki/ca/', oldcert.profile.name+'.crl' )
         open("%s" % crl_file, "w").write(crl.export(certificate, private_key, type=FILETYPE_PEM))
         return super(revoke_cert, self).form_valid(form)
 
