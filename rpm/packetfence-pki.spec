@@ -58,6 +58,18 @@ chown -R pf.pf %{serverroot}
 chown pf.pf %{serverroot}/conf/httpd.conf
 chmod 600 %{serverroot}/conf/httpd.conf
 
+%preun
+if [ $1 -eq 0 ] ; then
+        /sbin/service packetfence-pki stop &>/dev/null || :
+        /sbin/chkconfig --del packetfence-pki
+fi
+
+%postun
+if [ $1 -eq 0 ]; then
+        if /usr/bin/id pf &>/dev/null; then
+               /usr/sbin/userdel pf || %logmsg "User \"pf\" could not be deleted."
+        fi
+fi
 
 %files
 %defattr(-,apache,apache,-)
