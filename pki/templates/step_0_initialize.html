@@ -5,18 +5,19 @@
 
 {% block title %}
         <img src="{% static "img/bullet_red.png" %}">
-          {% trans "PKI Initialize" %}
+          {% trans "CA Initialize" %}
 {% endblock %}
 
 
 
 {% block content %}
-<ul>
-<b>This will initialize the pki with the following steps:</b>
 
-<li>Step 1: Create the CA (This will create the CA that will be use to sign your certificates)</li>
-<li>Step 2: Configure the certificate profile (This will configure a profile that will be use to create your certificates)</li>
-<li>Step 3: Configure the REST API (This will configure a REST API that will be use to communicate with the PKI)</li>
+<h1>Welcome to PacketFence PKI</h1>
+<p>
+<b>This wizard will help you to configure your PKI</b>
+<ul>
+<li>Bellow you have to fill the form to initialize and create the Certificate Authority</li>
+<li>This CA will sign your certificate</li>
 
 </ul>
 <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>

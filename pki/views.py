@@ -500,7 +500,9 @@ class certWizard(SessionWizardView):
 
 class InitWizard(SessionWizardView):
     form_list = [CAForm, CertProfileForm, restForm]
-    template_name = 'wizardca.html'
+
+    def get_template_names(self):
+        return ['step_{0}_initialize.html'.format(self.steps.current)]
 
     def done(self, form_list, **kwargs):
         form_data = [form.cleaned_data for form in form_list]
