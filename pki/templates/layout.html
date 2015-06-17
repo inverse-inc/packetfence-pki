@@ -12,6 +12,16 @@
 <title>PacketFence-pki</title>
 {% bootstrap_css %}
 {% bootstrap_javascript jquery=1 %}
+<style>
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+</style>
 </head>
 
 <body>
@@ -46,11 +56,12 @@
 
   </div>
 
-  <div class="footer footer-fixed-bottom">
-    <p>
-      Copyright &copy; 2014 Inverse
-    </p>
-  </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">Copyright &copy; 2015 Inverse</p>
+      </div>
+    </footer>
+
 
 </body>
 
