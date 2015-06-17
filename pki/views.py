@@ -17,7 +17,7 @@ from django.http import Http404
 from OpenSSL.crypto import FILETYPE_PEM, FILETYPE_ASN1, FILETYPE_TEXT
 from OpenSSL import *
 
-from pyasn1_modules import rfc2560, pem, rfc2459, rfc2437
+from pyasn1_modules import pem, rfc2459, rfc2437
 from pyasn1.codec.der import encoder as der_encoder
 from pyasn1.codec.ber import encoder, decoder
 from pyasn1.type import univ, useful
@@ -35,6 +35,7 @@ from pki.serializers import *
 from pki.models import *
 from pki.forms import *
 from pki.utils import *
+from pki import rfc3560
 
 import datetime
 import hashlib
