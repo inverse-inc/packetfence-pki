@@ -35,7 +35,7 @@ from pki.serializers import *
 from pki.models import *
 from pki.forms import *
 from pki.utils import *
-from pki import rfc3560
+from pki import rfc2560
 
 import datetime
 import hashlib
