@@ -297,7 +297,7 @@ class revoke_cert(UpdateView):
         revoked.set_serial(str(x509.get_serial_number()))
         revoked.set_reason(form.cleaned_data['CRLReason'].encode('ascii'))
         crl.add_revoked(revoked)
-        oldcert = CertRevoked(cn = certificat.cn, mail = certificat.mail, x509 = certificat.x509, st = certificat.st, organisation = certificat.organisation, country = certificat.country, pkey = certificat.pkey, profile = certificat.profile, valid_until = certificat.valid_until, date = certificat.date, userIssuerHashmd5 = certificat.userIssuerHashmd5, userIssuerHashsha1 = certificat.userIssuerHashsha1, userIssuerHashsha256 = certificat.userIssuerHashsha256, userIssuerHashsha512 = certificat.userIssuerHashsha512, revoked = datetime.datetime.now(),CRLReason = donnee['CRLReason'] )
+        oldcert = CertRevoked(cn = certificat.cn, mail = certificat.mail, x509 = certificat.x509, st = certificat.st, organisation = certificat.organisation, country = certificat.country, pkey = certificat.pkey, profile = certificat.profile, valid_until = certificat.valid_until, date = certificat.date, userIssuerHashmd5 = certificat.userIssuerHashmd5, userIssuerHashsha1 = certificat.userIssuerHashsha1, userIssuerHashsha256 = certificat.userIssuerHashsha256, userIssuerHashsha512 = certificat.userIssuerHashsha512, revoked = datetime.datetime.now(),CRLReason = form.cleaned_data['CRLReason'] )
         oldcert.save()
         certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
         private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
