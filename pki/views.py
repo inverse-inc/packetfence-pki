@@ -403,7 +403,7 @@ def ocsp_server(request):
         revokedpos = certStatus.componentType.getPositionByName('revoked')
         revokedtype = certStatus.componentType.getTypeByPosition(revokedpos)
         revoked = revokedtype.clone()
-        revoked.setComponentByName('revocationTime',time.strftime('%Y%m%d%H%M%SZ',time.gmtime(cert.revoked)))
+        revoked.setComponentByName('revocationTime',time.strftime('%Y%m%d%H%M%SZ',time.gmtime(time.mktime(cert.revoked.timetuple()))))
         revoked.setComponentByName('revocationReason', cert.CRLReason.encode('ascii'))
         certStatus.setComponentByPosition(1,revoked)
     else:
