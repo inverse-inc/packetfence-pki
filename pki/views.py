@@ -298,7 +298,7 @@ class revoke_cert(UpdateView):
         revoked.set_serial(str(x509.get_serial_number()))
         revoked.set_reason(form.cleaned_data['CRLReason'].encode('ascii'))
         crl.add_revoked(revoked)
-        oldcert = CertRevoked(cn = certificat.cn, mail = certificat.mail, x509 = certificat.x509, st = certificat.st, organisation = certificat.organisation, country = certificat.country, pkey = certificat.pkey, profile = certificat.profile, valid_until = certificat.valid_until, date = certificat.date, userIssuerHashmd5 = certificat.userIssuerHashmd5, userIssuerHashsha1 = certificat.userIssuerHashsha1, userIssuerHashsha256 = certificat.userIssuerHashsha256, userIssuerHashsha512 = certificat.userIssuerHashsha512, revoked = datetime.datetime.now(),CRLReason = form.cleaned_data['CRLReason'] )
+        oldcert = CertRevoked(cn = certificat.cn, mail = certificat.mail, x509 = certificat.x509, st = certificat.st, organisation = certificat.organisation, country = certificat.country, pkey = certificat.pkey, profile = certificat.profile, valid_until = certificat.valid_until, date = certificat.date, userIssuerHashmd5 = certificat.userIssuerHashmd5, userIssuerHashsha1 = certificat.userIssuerHashsha1, userIssuerHashsha256 = certificat.userIssuerHashsha256, userIssuerHashsha512 = certificat.userIssuerHashsha512, revoked = datetime.datetime.now(),CRLReason = form.cleaned_data['CRLReason'] , serial = certificat.id)
         oldcert.save()
         certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
         private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)
@@ -364,13 +364,25 @@ def ocsp_server(request):
         issuerNameHash = issuerNameHash.prettyPrint().lstrip("0x")
         try:
             if algorithm.prettyPrint() == '1.3.14.3.2.26':
-                cert = Cert.objects.get(userIssuerHashsha1 = issuerNameHash, id = serialNumber.prettyPrint())
+                try:
+                    cert = Cert.objects.get(userIssuerHashsha1 = issuerNameHash, id = serialNumber.prettyPrint())
+                except Cert.DoesNotExist:
+                    cert = CertRevoked.objects.get(userIssuerHashsha1 = issuerNameHash, serial = serialNumber.prettyPrint())
             elif algorithm.prettyPrint() == '1.2.840.113549.2.5':
-                cert = Cert.objects.get(userIssuerHashmd5 = issuerNameHash, id = serialNumber.prettyPrint())
+                try:
+                    cert = Cert.objects.get(userIssuerHashmd5 = issuerNameHash, id = serialNumber.prettyPrint())
+                except Cert.DoesNotExist:
+                    cert = CertRevoked.objects.get(userIssuerHashmd5 = issuerNameHash, serial = serialNumber.prettyPrint())
             elif algorithm.prettyPrint() == '2.16.840.1.101.3.4.2.1':
-                cert = Cert.objects.get(userIssuerHashsha256 = issuerNameHash, id = serialNumber.prettyPrint())
+                try:
+                    cert = Cert.objects.get(userIssuerHashsha256 = issuerNameHash, id = serialNumber.prettyPrint())
+                except Cert.DoesNotExist:
+                    cert = CertRevoked.objects.get(userIssuerHashsha256 = issuerNameHash, serial = serialNumber.prettyPrint())
             elif algorithm.prettyPrint() == '2.16.840.1.101.3.4.2.3':
-                cert = Cert.objects.get(userIssuerHashsha512 = issuerNameHash, id = serialNumber.prettyPrint())
+                try:
+                    cert = Cert.objects.get(userIssuerHashsha512 = issuerNameHash, id = serialNumber.prettyPrint())
+                except Cert.DoesNotExist:
+                    cert = CertRevoked.objects.get(userIssuerHashsha512 = issuerNameHash, serial = serialNumber.prettyPrint())
             else:
                 break
         except:
@@ -809,7 +821,7 @@ class cert_revoke(APIView):
             revoked.set_serial(str(x509.get_serial_number()))
             revoked.set_reason(donnee['CRLReason'].encode('ascii'))
             crl.add_revoked(revoked)
-            oldcert = CertRevoked(cn = certificat.cn, mail = certificat.mail, x509 = certificat.x509, st = certificat.st, organisation = certificat.organisation, country = certificat.country, pkey = certificat.pkey, profile = certificat.profile, valid_until = certificat.valid_until, date = certificat.date, userIssuerHashmd5 = certificat.userIssuerHashmd5, userIssuerHashsha1 = certificat.userIssuerHashsha1, userIssuerHashsha256 = certificat.userIssuerHashsha256, userIssuerHashsha512 = certificat.userIssuerHashsha512, revoked = datetime.datetime.now(),CRLReason = donnee['CRLReason'] )
+            oldcert = CertRevoked(cn = certificat.cn, mail = certificat.mail, x509 = certificat.x509, st = certificat.st, organisation = certificat.organisation, country = certificat.country, pkey = certificat.pkey, profile = certificat.profile, valid_until = certificat.valid_until, date = certificat.date, userIssuerHashmd5 = certificat.userIssuerHashmd5, userIssuerHashsha1 = certificat.userIssuerHashsha1, userIssuerHashsha256 = certificat.userIssuerHashsha256, userIssuerHashsha512 = certificat.userIssuerHashsha512, revoked = datetime.datetime.now(),CRLReason = donnee['CRLReason'], serial = certificat.id )
             oldcert.save()
             certificate = crypto.load_certificate(FILETYPE_PEM,certificat.profile.ca.ca_cert)
             private_key = crypto.load_privatekey(FILETYPE_PEM, certificat.profile.ca.ca_key)

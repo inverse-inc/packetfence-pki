@@ -417,6 +417,7 @@ class CertRevoked(models.Model):
     userIssuerHashsha1 = models.TextField(blank=1,null=1,max_length=41,editable=False)
     userIssuerHashsha256 = models.TextField(blank=1,null=1,max_length=65,editable=False)
     userIssuerHashsha512 = models.TextField(blank=1,null=1,max_length=129,editable=False)
+    serial =  models.IntegerField(blank=1,null=1,max_length=6,editable=False)
 
 class ValueOnlyBitStringEncoder(encoder.encoder.BitStringEncoder):
     # These methods just do not encode tag and length fields of TLV
