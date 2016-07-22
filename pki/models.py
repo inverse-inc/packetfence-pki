@@ -253,7 +253,7 @@ class CertProfile(models.Model):
     validity = models.IntegerField(help_text="Number of day the certificate will be valid")
     key_type = models.IntegerField(choices=((crypto.TYPE_RSA, 'RSA'), (crypto.TYPE_DSA, 'DSA')))
     key_size = models.IntegerField(choices=((512, '512'), (1024, '1024'),(2048, '2048')))
-    digest = models.CharField(max_length=10, choices=(('md5', 'md5'),('sha1', 'sha1')))
+    digest = models.CharField(max_length=10, choices=(('md5', 'md5'),('sha1', 'sha1'),('sha256', 'sha256')))
     key_usage = models.CharField(max_length=50,blank=1,help_text="Optional. One or many of: digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement, keyCertSign, cRLSign, encipherOnly, decipherOnly")
     extended_key_usage = models.CharField(max_length=50,blank=1,help_text="Mandatory. Should be serverAuth for a Server Profile, clientAuth for a User Profile")
     p12_smtp_server = models.CharField(max_length=30,help_text="IP or FQDN of the smtp server to relay the email containing the certificate.")
