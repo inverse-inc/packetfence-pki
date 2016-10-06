@@ -18,6 +18,10 @@
         LoadModule      authz_core_module       modules/mod_authz_core.so
     </IfModule>
 
+    <IfModule !mod_unixd.c>
+        LoadModule      unixd_module            modules/mod_unixd.so
+    </IfModule>
+
 </IfVersion>
 
     <IfModule !mod_ssl.c>
