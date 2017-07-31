@@ -73,6 +73,18 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'pfpki',
+#        'USER': 'pf',
+#        'PASSWORD': 'pf',
+#        'HOST': '127.0.0.1',
+#        'PORT': '',
+#    }
+#}
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
