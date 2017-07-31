@@ -44,7 +44,7 @@ class CA(models.Model):
     issuerKeyHashsha512 = models.TextField(blank=1,null=1,max_length=129,editable=False)
     def sign(self):
         k = crypto.PKey()
-        k.generate_key(self.key_type, self.key_size)
+        k.generate_key(int(self.key_type), int(self.key_size))
         cert = crypto.X509()
         subj = cert.get_subject()
         setattr(subj, 'CN', self.cn)
@@ -54,7 +54,7 @@ class CA(models.Model):
         setattr(subj, 'C', str(self.country))
         cert.set_serial_number(1000)
         cert.gmtime_adj_notBefore(0)
-        cert.gmtime_adj_notAfter(self.days * 24 * 60 * 60)
+        cert.gmtime_adj_notAfter(int(self.days * 24 * 60 * 60))
         cert.set_issuer(cert.get_subject())
         cert.set_pubkey(k)
         if self.key_usage:
@@ -307,7 +307,7 @@ class Cert(models.Model):
         setattr(subj, 'O', self.organisation)
         setattr(subj, 'C', str(self.country))
         pkey = crypto.PKey()
-        pkey.generate_key(self.profile.key_type, self.profile.key_size)
+        pkey.generate_key(int(self.profile.key_type), int(self.profile.key_size))
         req.set_pubkey(pkey)
         req.sign(pkey, str(self.profile.digest))
         self.pkey = crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey)
@@ -321,7 +321,7 @@ class Cert(models.Model):
         x509.gmtime_adj_notBefore(-3600)
         self.valid_until = self.date + datetime.timedelta(days=self.profile.validity)
         delta = self.valid_until.date() - self.date.date();
-        x509.gmtime_adj_notAfter(delta.days * 60 * 60 * 24)
+        x509.gmtime_adj_notAfter(int(delta.days * 60 * 60 * 24))
         if self.profile.key_usage:
             x509.add_extensions([crypto.X509Extension("keyUsage", True,str(self.profile.key_usage))])
         if self.profile.extended_key_usage:
