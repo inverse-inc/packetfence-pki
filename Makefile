@@ -35,7 +35,7 @@ install:
 	for i in '$(DIRS)'; do \
 		for j in `find $$i`; do \
 		if [ -f $$j ]; then \
-			$(INSTALL) $(UID) $(GID) $$j $(DESTDIR)$(PREFIX)/$$j; \
+			$(INSTALL) $$j $(DESTDIR)$(PREFIX)/$$j; \
 		fi; \
 		done \
 	done
