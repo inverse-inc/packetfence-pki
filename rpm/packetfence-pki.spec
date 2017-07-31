@@ -67,7 +67,9 @@ fi
 %postun
 if [ $1 -eq 0 ]; then
         if /usr/bin/id pf &>/dev/null; then
+               set +e
                /usr/sbin/userdel pf || %logmsg "User \"pf\" could not be deleted."
+               set -e
         fi
 fi
 
