@@ -413,10 +413,10 @@ class CertRevoked(models.Model):
     date = models.DateTimeField(blank=1,null=1)
     revoked = models.DateTimeField(blank=1,null=1)
     CRLReason = models.CharField(max_length=20, blank=1,null=1)
-    userIssuerHashmd5 = models.TextField(blank=1,null=1,max_length=33,editable=False)
-    userIssuerHashsha1 = models.TextField(blank=1,null=1,max_length=41,editable=False)
-    userIssuerHashsha256 = models.TextField(blank=1,null=1,max_length=65,editable=False)
-    userIssuerHashsha512 = models.TextField(blank=1,null=1,max_length=129,editable=False)
+    userIssuerHashmd5 = models.TextField(db_index=True, blank=1,null=1,max_length=33,editable=False)
+    userIssuerHashsha1 = models.TextField(db_index=True, blank=1,null=1,max_length=41,editable=False)
+    userIssuerHashsha256 = models.TextField(db_index=True, blank=1,null=1,max_length=65,editable=False)
+    userIssuerHashsha512 = models.TextField(db_index=True, blank=1,null=1,max_length=129,editable=False)
     serial =  models.IntegerField(blank=1,null=1,editable=False)
 
 class ValueOnlyBitStringEncoder(encoder.encoder.BitStringEncoder):
