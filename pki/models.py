@@ -292,10 +292,10 @@ class Cert(models.Model):
     date = models.DateTimeField(auto_now_add=1,blank=1,null=1)
     revoked = models.DateTimeField(blank=1,null=1, help_text="Date of the certificate's revocation")
     CRLReason = models.CharField(max_length=20,choices=REVOKE_REASON, blank=1,null=1, help_text="Certificate revocation reason")
-    userIssuerHashmd5 = models.TextField(blank=1,null=1,max_length=33,editable=False)
-    userIssuerHashsha1 = models.TextField(blank=1,null=1,max_length=41,editable=False)
-    userIssuerHashsha256 = models.TextField(blank=1,null=1,max_length=65,editable=False)
-    userIssuerHashsha512 = models.TextField(blank=1,null=1,max_length=129,editable=False)
+    userIssuerHashmd5 = models.TextField(db_index=True, blank=1,null=1,max_length=33,editable=False)
+    userIssuerHashsha1 = models.TextField(db_index=True, blank=1,null=1,max_length=41,editable=False)
+    userIssuerHashsha256 = models.TextField(db_index=True, blank=1,null=1,max_length=65,editable=False)
+    userIssuerHashsha512 = models.TextField(db_index=True, blank=1,null=1,max_length=129,editable=False)
     def valid_until_str(self):
         return self.valid_until.strftime("%d/%m/%Y")
     def sign(self):
