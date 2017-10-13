@@ -35,7 +35,7 @@ class CA(models.Model):
     digest = models.CharField(max_length=10, choices=(('md5', 'md5'),('sha1', 'sha1')))
     key_usage = models.CharField(max_length=50,blank=1,help_text="Optional. One or many of: digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement, keyCertSign, cRLSign, encipherOnly, decipherOnly")
     extended_key_usage = models.CharField(max_length=50,blank=1,help_text="Optional. One or many of: serverAuth, clientAuth, codeSigning, emailProtection, timeStamping, msCodeInd, msCodeCom, msCTLSign, msSGC, msEFS, nsSGC")
-    days = models.IntegerField(max_length=4,help_text="Number of day the CA will be valid")
+    days = models.IntegerField(help_text="Number of day the CA will be valid")
     ca_key = models.TextField(blank=1,null=1,editable=False)
     ca_cert = models.TextField(blank=1,null=1,editable=False)
     issuerKeyHashmd5 = models.TextField(blank=1,null=1,max_length=33,editable=False)
@@ -417,7 +417,7 @@ class CertRevoked(models.Model):
     userIssuerHashsha1 = models.TextField(blank=1,null=1,max_length=41,editable=False)
     userIssuerHashsha256 = models.TextField(blank=1,null=1,max_length=65,editable=False)
     userIssuerHashsha512 = models.TextField(blank=1,null=1,max_length=129,editable=False)
-    serial =  models.IntegerField(blank=1,null=1,max_length=6,editable=False)
+    serial =  models.IntegerField(blank=1,null=1,editable=False)
 
 class ValueOnlyBitStringEncoder(encoder.encoder.BitStringEncoder):
     # These methods just do not encode tag and length fields of TLV
