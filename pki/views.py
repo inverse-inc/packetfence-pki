@@ -114,6 +114,7 @@ class list_cert_page(generic.ListView):
 
 
 class create_cert_profile(AjaxableResponseMixin, CreateView):
+    fields = '__all__'
     template_name = 'certprofile_form.html'
     model = CertProfile
     success_url = '/pki/profile/'
@@ -145,6 +146,7 @@ class list_cert_profile(generic.ListView):
 
 
 class create_cert(AjaxableResponseMixin, CreateView):
+    fields = '__all__'
     template_name = 'cert_form.html'
     model = Cert
     fields = ['cn','mail','st','organisation','country','profile']
@@ -185,6 +187,7 @@ class list_certrevoked(generic.ListView):
         return CertRevoked.objects.all()
 
 class create_ca(AjaxableResponseMixin, CreateView):
+    fields = '__all__'
     template_name = 'ca_form.html'
     model = CA
     fields = ['cn','mail','organisation','country','state','locality','key_type','key_size','digest','key_usage','extended_key_usage','days']
@@ -281,6 +284,7 @@ def sign_cert(request,pk):
 
 
 class revoke_cert(UpdateView):
+    fields = '__all__'
     template_name = 'cert_revoke.html'
     model = Cert
     fields = ['CRLReason']
@@ -677,6 +681,7 @@ class cert_list(APIView):
 
 
 class create_rest(AjaxableResponseMixin, CreateView):
+    fields = '__all__'
     template_name = 'rest_form.html'
     model = rest
     success_url = '/pki/rest/'
@@ -707,6 +712,7 @@ class list_rest(generic.ListView):
         return rest.objects.all()
 
 class create_ldap(AjaxableResponseMixin, CreateView):
+    fields = '__all__'
     template_name = 'ldap_form.html'
     model = LDAP
     success_url = '/pki/ldap/'
@@ -736,6 +742,7 @@ class list_ldap(generic.ListView):
         return LDAP.objects.all()
 
 class create_attribut(AjaxableResponseMixin, CreateView):
+    fields = '__all__'
     template_name = 'attribut_form.html'
     model = Attrib
     success_url = '/pki/ldap/attribut/'
@@ -765,6 +772,7 @@ class list_attribut(generic.ListView):
         return Attrib.objects.all()
 
 class create_schema(AjaxableResponseMixin, CreateView):
+    fields = '__all__'
     template_name = 'schema_form.html'
     model = SCHEMA
     success_url = '/pki/ldap/schema/'
