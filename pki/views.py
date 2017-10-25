@@ -124,6 +124,7 @@ class create_cert_profile(AjaxableResponseMixin, CreateView):
 
 
 class update_cert_profile(UpdateView):
+    fields = '__all__'
     template_name = 'certprofile_form.html'
     model = CertProfile
     success_url = '/pki/profile/'
@@ -155,6 +156,7 @@ class create_cert(AjaxableResponseMixin, CreateView):
 
 
 class update_cert(UpdateView):
+    fields = '__all__'
     template_name = 'cert_form.html'
     model = Cert
     fields = ['cn','mail','st','organisation','country','profile','revoked']
@@ -194,6 +196,7 @@ class create_ca(AjaxableResponseMixin, CreateView):
 
 
 class update_ca(UpdateView):
+    fields = '__all__'
     template_name = 'ca_form.html'
     model = CA
     success_url = '/pki/ca/'
@@ -233,6 +236,7 @@ def register(request):
 
 
 class update_user(UpdateView):
+    fields = '__all__'
     template_name = 'users_form.html'
     model = User
     success_url = '/users/'
@@ -683,6 +687,7 @@ class create_rest(AjaxableResponseMixin, CreateView):
 
 
 class update_rest(UpdateView):
+    fields = '__all__'
     template_name = 'rest_form.html'
     model = rest
     success_url = '/pki/rest/'
@@ -711,6 +716,7 @@ class create_ldap(AjaxableResponseMixin, CreateView):
         return super(create_ldap, self).form_valid(form)
 
 class update_ldap(UpdateView):
+    fields = '__all__'
     template_name = 'ldap_form.html'
     model = LDAP
     success_url = '/pki/ldap/'
@@ -739,6 +745,7 @@ class create_attribut(AjaxableResponseMixin, CreateView):
         return super(create_attribut, self).form_valid(form)
 
 class update_attribut(UpdateView):
+    fields = '__all__'
     template_name = 'attribut_form.html'
     model = Attrib
     success_url = '/pki/ldap/attribut/'
@@ -767,6 +774,7 @@ class create_schema(AjaxableResponseMixin, CreateView):
         return super(create_schema, self).form_valid(form)
 
 class update_schema(UpdateView):
+    fields = '__all__'
     template_name = 'schema_form.html'
     model = SCHEMA
     success_url = '/pki/ldap/schema/'
