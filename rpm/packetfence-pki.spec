@@ -79,7 +79,6 @@ fi
 %{serverroot}/inverse/*
 %{serverroot}/pki/*
 %{serverroot}/manage.py
-%{serverroot}/initial_data.json
 %dir %{serverroot}/logs
 %dir %{serverroot}/ca
 %defattr(-,root,root)

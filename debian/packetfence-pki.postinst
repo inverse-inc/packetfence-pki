@@ -15,7 +15,7 @@ fi
 if [ -f /usr/local/packetfence-pki/db.sqlite3 ] ; then
 	echo "Database is there do nothing"
 else
-cd /usr/local/packetfence-pki && ./manage.py migrate admin && ./manage.py migrate auth && ./manage.py migrate authtoken && ./manage.py migrate contenttypes && ./manage.py migrate sessions && ./manage.py syncdb --noinput
+cd /usr/local/packetfence-pki && ./manage.py migrate admin && ./manage.py migrate auth && ./manage.py migrate authtoken && ./manage.py migrate contenttypes && ./manage.py migrate sessions && ./manage.py migrate
 fi
 chown -R pf.pf /usr/local/packetfence-pki
 chown pf.pf /usr/local/packetfence-pki/conf/httpd.conf
