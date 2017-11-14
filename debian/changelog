@@ -1,3 +1,9 @@
+packetfence-pki (1.1.0) unstable; urgency=medium
+
+  * Bug fixing
+
+ -- Durand Fabrice <fdurand@inverse.ca>  Tue, 14 Nov 2017 10:53:14 -0400
+
 packetfence-pki (1.0.4) unstable; urgency=medium
 
   * Fix OCSP
