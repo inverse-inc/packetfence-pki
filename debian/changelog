@@ -1,3 +1,9 @@
+packetfence-pki (1.1.1) unstable; urgency=medium
+
+  * Fixed issue with Key usage
+
+ -- Durand Fabrice <fdurand@inverse.ca>  Tue, 15 Nov 2017 09:19:00 -0400
+
 packetfence-pki (1.1.0) unstable; urgency=medium
 
   * Bug fixing
