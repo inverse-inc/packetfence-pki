@@ -32,7 +32,7 @@ class CA(models.Model):
     locality = models.CharField(max_length=40,help_text="Locality")
     key_type = models.IntegerField(choices=((crypto.TYPE_RSA, 'RSA'), (crypto.TYPE_DSA, 'DSA')))
     key_size = models.IntegerField(choices=((512, '512'), (1024, '1024'), (2048, '2048')))
-    digest = models.CharField(max_length=10, choices=(('md5', 'md5'),('sha1', 'sha1')))
+    digest = models.CharField(max_length=10, choices=(('md5', 'md5'),('sha1', 'sha1'),('sha256', 'sha256')))
     key_usage = models.CharField(max_length=50,blank=1,help_text="Optional. One or many of: digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement, keyCertSign, cRLSign, encipherOnly, decipherOnly")
     extended_key_usage = models.CharField(max_length=50,blank=1,help_text="Optional. One or many of: serverAuth, clientAuth, codeSigning, emailProtection, timeStamping, msCodeInd, msCodeCom, msCTLSign, msSGC, msEFS, nsSGC")
     days = models.IntegerField(help_text="Number of day the CA will be valid")
@@ -58,9 +58,9 @@ class CA(models.Model):
         cert.set_issuer(cert.get_subject())
         cert.set_pubkey(k)
         if self.key_usage:
-            cert.add_extensions([crypto.X509Extension("keyUsage", True,self.key_usage)])
+            cert.add_extensions([crypto.X509Extension("keyUsage", True,str(self.key_usage))])
         if self.extended_key_usage:
-            cert.add_extensions([crypto.X509Extension("extendedKeyUsage", True,self.extended_key_usage)])
+            cert.add_extensions([crypto.X509Extension("extendedKeyUsage", True,str(self.extended_key_usage))])
         cert.add_extensions([crypto.X509Extension("basicConstraints", True, "CA:TRUE")])
         cert.sign(k, str(self.digest))
         self.ca_key = crypto.dump_privatekey(crypto.FILETYPE_PEM, k)
