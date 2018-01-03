@@ -56,6 +56,11 @@ fi
 chown -R pf.pf %{serverroot}
 chown pf.pf %{serverroot}/conf/httpd.conf
 chmod 600 %{serverroot}/conf/httpd.conf
+
+echo "Disabling SELinux..."
+setenforce 0
+sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
+
 /bin/systemctl enable packetfence-pki
 /bin/systemctl start packetfence-pki
 /usr/bin/firewall-cmd --zone=public --add-port=9292/tcp

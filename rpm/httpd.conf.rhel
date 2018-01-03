@@ -46,6 +46,9 @@
     <IfModule !mod_alias.c>
         LoadModule      alias_module            modules/mod_alias.so
     </IfModule>
+    <IfModule !mod_systemd.c>
+        LoadModule      systemd_module          modules/mod_systemd.so
+    </IfModule>
 
     user pf
     group pf
