@@ -85,6 +85,6 @@ fi
 %dir %{serverroot}/logs
 %dir %{serverroot}/ca
 %defattr(-,root,root)
-/etc/init.d/%{name}
+%attr(0644, root, root) /usr/lib/systemd/system/packetfence-*.service
 
 %changelog
