@@ -52,7 +52,7 @@ fi
 if [ -f %{serverroot}/db.sqlite3 ] ; then
         echo "Database is there do nothing"
 else
-cd %{serverroot} && python manage.py migrate
+cd %{serverroot} && python manage.py makemigration && python manage.py migrate
 fi
 chown -R pf.pf %{serverroot}
 chown pf.pf %{serverroot}/conf/httpd.conf
