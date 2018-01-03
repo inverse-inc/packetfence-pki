@@ -1,7 +1,7 @@
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
 %define serverroot /usr/local/packetfence-pki
 Name: packetfence-pki
-Version: 1.1.2
+Version: 1.1.3
 Release: 1%{?dist}
 Summary: packetfence-pki
 
