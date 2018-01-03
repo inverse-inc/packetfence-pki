@@ -63,8 +63,11 @@ sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
 
 /bin/systemctl enable packetfence-pki
 /bin/systemctl start packetfence-pki
+
+set +e
 /usr/bin/firewall-cmd --zone=public --add-port=9292/tcp
 /usr/bin/firewall-cmd --zone=public --add-port=9393/tcp
+set -e
 
 %preun
 if [ $1 -eq 0 ] ; then
