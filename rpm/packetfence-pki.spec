@@ -27,8 +27,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %install
 make PREFIX=$RPM_BUILD_ROOT%{serverroot} PREFIXLIB=$RPM_BUILD_ROOT%{serverroot} UID='-o nobody' GID='-g nobody' install
-install -d -m0700 $RPM_BUILD_ROOT/etc/init.d
-install -m0755 rpm/%{name} $RPM_BUILD_ROOT/etc/init.d/%{name}
+%{__install} -D -m0644 conf/packetfence-pki.service $RPM_BUILD_ROOT/usr/lib/systemd/system/packetfence-pki.service
 
 %clean
 rm -rf %{buildroot}
@@ -57,6 +56,10 @@ fi
 chown -R pf.pf %{serverroot}
 chown pf.pf %{serverroot}/conf/httpd.conf
 chmod 600 %{serverroot}/conf/httpd.conf
+/bin/systemctl enable packetfence-pki
+/bin/systemctl start packetfence-pki
+/usr/bin/firewall-cmd --zone=public --add-port=9292/tcp
+/usr/bin/firewall-cmd --zone=public --add-port=9393/tcp
 
 %preun
 if [ $1 -eq 0 ] ; then
