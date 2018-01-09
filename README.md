@@ -95,7 +95,8 @@ mysql -u root -p -e "FLUSH PRIVILEGES"`
 Then sync the db (in /usr/local/packetfence-pki):
 
 ```
-python manage.py syncdb --noinput
+python manage.py makemigration
+python manage.py migrate
 ```
 
 ## Initial setup
