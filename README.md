@@ -38,7 +38,7 @@ sudo pip install Django
 To install a specific version, add a requirement specifier like this:
 
 ```
-sudo pip install Django==1.6.6
+sudo pip install Django==1.8.0
 ```
 
 ## Install Django REST Framework
